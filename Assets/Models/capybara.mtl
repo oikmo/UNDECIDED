@@ -1,0 +1,15 @@
+# Blender MTL File: 'capybara_sketchfab.blend'
+# Material Count: 1
+
+newmtl capybara_pbr
+Ns 225.625023
+Ka 1.000000 1.000000 1.000000
+Kd 0.036889 0.029557 0.028426
+Ks 0.108333 0.108333 0.108333
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump C:\\Users\\Oikmo\\undecided\\Assets\\Textures\\capybara\\source\\textures\\capybara_Normal_OpenGL.png
+map_Kd C:\\Users\\Oikmo\\undecided\\Assets\\Textures\\capybara\\textures\\capybara_Base_Color.png
+map_Ns C:\\Users\\Oikmo\\undecided\\Assets\\Textures\\capybara\\source\\textures\\capybara_Roughness.png

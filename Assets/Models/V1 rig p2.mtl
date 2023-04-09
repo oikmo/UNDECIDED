@@ -1,0 +1,44 @@
+# Blender MTL File: 'V1 rig p2.blend'
+# Material Count: 4
+
+newmtl Material.002
+Ns 359.999993
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl None
+Ns 500
+Ka 0.8 0.8 0.8
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2
+
+newmtl v1_wingcolour_tex
+Ns 250.000000
+Ka 0.495455 0.495455 0.495455
+Kd 0.800000 0.800000 0.800000
+Ks 0.050000 0.050000 0.050000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Bump Ultrakill_SFM\\Blender\\v1_wingcolour_n.png
+map_Kd Ultrakill_SFM\\Blender\\v1_wingcolour_d.jpg
+
+newmtl v1colour_tex
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.100000 0.100000 0.100000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump Ultrakill_SFM\\Blender\\v1_colour_n.tga
+map_Kd Ultrakill_SFM\\Blender\\v1_colour_d.jpg

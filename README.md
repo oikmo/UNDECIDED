@@ -8,9 +8,9 @@
 
 Oikmo (Oikmo#9889)  
 
-LYCNK (LYCN K#4499)  
+LYCNK (LYCNK#4161)  
 
-MasterOof (skekstisnk#2889)  
+
 ![Capybara](https://user-images.githubusercontent.com/65462136/173542828-60647788-d8e0-4ef6-85e1-6abe49538c70.png)  
 
 

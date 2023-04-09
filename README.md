@@ -6,7 +6,7 @@
 
 ## DEVS :
 
-Oikmo (Oikmo#9889)  
+Oikmo (Oikmo#5029)  
 
 LYCNK (LYCNK#4161)  
 

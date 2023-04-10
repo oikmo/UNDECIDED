@@ -280,7 +280,6 @@ public class DebugController : MonoBehaviour
 
     public void OnApplicationQuit()
     {
-        print("false");
         File.WriteAllText(Application.persistentDataPath + "/console-save.consave", "");
     }
 }

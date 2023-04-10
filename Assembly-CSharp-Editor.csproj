@@ -635,12 +635,6 @@
     <Reference Include="UnityEditor.TestRunner">
         <HintPath>/media/oikmo/New Volume/maniaticdevs projs/PROJEXTS/UNDECIDED/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>
     </Reference>
-    <Reference Include="com.fluid.unique-id">
-        <HintPath>/media/oikmo/New Volume/maniaticdevs projs/PROJEXTS/UNDECIDED/Library/ScriptAssemblies/com.fluid.unique-id.dll</HintPath>
-    </Reference>
-    <Reference Include="com.fluid.unique-id.Editor">
-        <HintPath>/media/oikmo/New Volume/maniaticdevs projs/PROJEXTS/UNDECIDED/Library/ScriptAssemblies/com.fluid.unique-id.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="Cinemachine">
         <HintPath>/media/oikmo/New Volume/maniaticdevs projs/PROJEXTS/UNDECIDED/Library/ScriptAssemblies/Cinemachine.dll</HintPath>
     </Reference>
@@ -682,6 +676,12 @@
     </Reference>
     <Reference Include="UnityEngine.UI">
         <HintPath>/media/oikmo/New Volume/maniaticdevs projs/PROJEXTS/UNDECIDED/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="RetroTVFX.Editor">
+        <HintPath>/media/oikmo/New Volume/maniaticdevs projs/PROJEXTS/UNDECIDED/Library/ScriptAssemblies/RetroTVFX.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="RetroTVFX.Runtime">
+        <HintPath>/media/oikmo/New Volume/maniaticdevs projs/PROJEXTS/UNDECIDED/Library/ScriptAssemblies/RetroTVFX.Runtime.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

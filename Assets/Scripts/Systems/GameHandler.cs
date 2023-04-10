@@ -35,12 +35,11 @@ public class GameHandler : MonoBehaviour
     public InventoryObject playerInventory;
     public PlayerHealth pHealth;
     public PlayerStuff pStuff;
-    public GameObject dialogue;
+    public GameObject dialogue, cursor, canvas;
     public CanvasGroup vHealth, vStamina;
     public PlayerInputController playerInput;
     [SerializeField] private GameObject ui_inventory;
     public AudioSource death;
-    public GameObject cursor;
     #endregion
 
     #region input cooldown vars
@@ -166,7 +165,7 @@ public class GameHandler : MonoBehaviour
                 }
             }
         }
-
+        if(canvas == null) { canvas = GameObject.Find("Canvas (Important)"); }
         if (deadMenu == null) { deadMenu = GameObject.Find("DeathScreen"); }
         if (cam == null) { cam = GameObject.Find("PlayerCam").GetComponent<Camera>(); aGlitch = cam.gameObject.GetComponent<AnalogGlitch>(); dGlitch = cam.gameObject.GetComponent<DigitalGlitch>(); }
 

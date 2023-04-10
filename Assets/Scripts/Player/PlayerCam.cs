@@ -13,6 +13,7 @@ public class PlayerCam : MonoBehaviour
     public Transform camThingy;
     public Transform particle;
     public Camera cam;
+    public GameObject cutsceneHolder, renderlayers;
     public Vector3 test;
     [Header("Rotation")]
     public float xRotation;

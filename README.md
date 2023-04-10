@@ -1,16 +1,16 @@
 # UNDECIDED
 
-### This is just a project we are working on and having fun on :)
+### Its a game, me and LYCNK, in unity 3d, um. (what?)
 
 ![Screenshot 2021-12-22 173315](https://user-images.githubusercontent.com/78755068/147254703-da2f30e6-d457-4707-8431-ad2ff635057e.png) 
 
 ## DEVS :
 
-Oikmo (Oikmo#9889)  
+Oikmo (Oikmo#5029)  
 
-LYCNK (LYCN K#4499)  
+LYCNK (LYCNK#4161)  
 
-MasterOof (skekstisnk#2889)  
+
 ![Capybara](https://user-images.githubusercontent.com/65462136/173542828-60647788-d8e0-4ef6-85e1-6abe49538c70.png)  
 
 

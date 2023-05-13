@@ -9,6 +9,11 @@ public class ScrollingText : MonoBehaviour
     [SerializeField] TMP_Text text;
     [SerializeField] float textSpeed;
 
+    public void Awake()
+    {
+        text.text = string.Empty;
+    }
+
     public void DisplayText(string part)
     {
         StartCoroutine(TypeLine(part));

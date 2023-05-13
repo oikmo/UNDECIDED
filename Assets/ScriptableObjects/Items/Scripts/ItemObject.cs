@@ -9,14 +9,21 @@ public enum ItemType
     Gun,
     Default
 }
+public enum GunType
+{ 
+    Pistol,
+    Rifle
+}
+
 [System.Serializable]
 public class ItemObject : ScriptableObject
 {
+    public string itemName;
     public GameObject prefab;
     public ItemType type;
     [TextArea(15, 20)]
     public string description;
     public int maxStackSize;
-    public string itemName;
     public float pickUpTime;
+    public Sprite icon;
 }

@@ -8,93 +8,93 @@ using System.Linq;
 
 public class Gun : MonoBehaviour
 {
-    [Header("References")]
+    public AudioSource[] speaker;
     public GunData gunData;
     private Transform cam;
     [SerializeField] private GameObject gunModel;
-    private TMP_Text ammoSize;
-    private TMP_Text g_name;
-    private Image image;
-
     int requiredAmmo = 0;
     float timeSinceLastShot;
 
-    private void Start()
+    public void Start()
     {
-        GameObject tempObject1 = GameObject.Find("Gun Sway");
-        GameObject tempObject2 = GameObject.Find("CameraHolder");
-        
-
-        if (tempObject1 != null && tempObject2 != null)
-        {
-            cam = tempObject2.GetComponent<Transform>();
-            
-            if(tempObject1.transform.Find("Gun_Ammo") != null)
-            {
-                ammoSize = tempObject1.transform.Find("Gun_Ammo").GetComponent<TMP_Text>();
-                ammoSize.SetText("");
-            }
-
-            if(tempObject1.transform.Find("Gun_Name") != null)
-            {
-                g_name = tempObject1.transform.Find("Gun_Name").GetComponent<TMP_Text>();
-                g_name.SetText("");
-            }
-
-            if(tempObject1.transform.Find("Gun_Image") != null)
-            {
-                image = tempObject1.transform.Find("Gun_Image").GetComponent<Image>();
-            }
-            
-        }
-
         PlayerShoot.shootInput += Shoot;
         PlayerShoot.reloadInput += StartReload;
     }
 
-    private void OnDisable() => gunData.reloading = false;
+    private void onDisable() => gunData.reloading = false;
+
+    private bool CanShoot() => !gunData.reloading && timeSinceLastShot > 1f / (gunData.fireRate / 60f);
+
+    private void Shoot()
+    {
+        if (gunData.curAmmoSize > 0 && !GameHandler.Instance.paused && gunModel.activeSelf)
+        {
+            if (CanShoot())
+            {
+                if (Physics.Raycast(cam.position, cam.forward, out RaycastHit hitInfo, gunData.range))
+                {
+                    IDamagable damageable = hitInfo.transform.GetComponent<IDamagable>();
+                    damageable?.Damage(gunData.damage);
+                }
+
+                gunData.curAmmoSize--;
+                timeSinceLastShot = 0;
+                OnGunShot();
+            }
+        }
+    }
 
     public void StartReload()
     {
-        if (!gunData.reloading && this.gameObject.activeSelf)
+        if (!gunData.reloading && gameObject.activeSelf)
             StartCoroutine(Reload());
     }
 
     private IEnumerator Reload()
     {
+        InventorySlot ammoItem = null;
+        AmmoObject ammo = null;
         gunData.reloading = true;
-
         yield return new WaitForSeconds(gunData.reloadTime);
 
-        if (gunData.currentAmmo != 0)
+        for (int i = 0; i < GameHandler.Instance.playerInventory.Container.Count - 1; i++)
         {
-            requiredAmmo = gunData.magSize - gunData.currentAmmo;
-        }
-        else
-        {
-            requiredAmmo = gunData.magSize;
-        }
-
-        print(requiredAmmo);
-
-        for(int i = 0; i<GameHandler.Instance.playerInventory.Container.Count - 1; i++)
-        {
-            if(GameHandler.Instance.playerInventory.Container.Any(p => p.ID == GameHandler.Instance.ammoSlot[i].ID && p.item == GameHandler.Instance.ammoSlot[i].item))
+            if (GameHandler.Instance.playerInventory.Container.Any(p => p.ID == GameHandler.Instance.refAmmoSlot[i].ID && p.item == GameHandler.Instance.refAmmoSlot[i].item))
             {
-                if (gunData.type == GunData.GunType.Pistol)
+                if (GameHandler.Instance.playerInventory.Container[i].GetType() == typeof(AmmoObject))
                 {
-                    if(GameHandler.Instance.playerInventory.Container[i].GetType() == typeof(AmmoObject))
+                    ammoItem = GameHandler.Instance.playerInventory.Container[i];
+                    
+                    if (GetType(ammoItem.item).ammoType == gunData.item.gunType)
                     {
-                        AmmoObject ammo = GetType(GameHandler.Instance.playerInventory.Container[i].item);
+                        ammo = GetType(ammoItem.item);
                     }
                 }
             }
-            
+
         }
 
-        gunData.currentAmmo = gunData.magSize;
+        if(ammoItem != null)
+        {
+            if (gunData.curAmmoSize == 0) { requiredAmmo = gunData.ammoSize; }
+            else { requiredAmmo = gunData.curAmmoSize - gunData.ammoSize; }
+
+            if (!(ammoItem.amount - requiredAmmo < 0))
+            {
+                PlaySound(2, gunData.onReload);
+                ammoItem.amount -= requiredAmmo;
+                gunData.curAmmoSize += requiredAmmo;
+            }
+        }
 
         gunData.reloading = false;
+    }
+
+    private void PlaySound(int i, AudioClip clip)
+    {
+        speaker[i].Stop();
+        speaker[i].clip = clip;
+        speaker[i].Play();
     }
 
     AmmoObject GetType(ItemObject item)
@@ -104,97 +104,14 @@ public class Gun : MonoBehaviour
         return ammo;
     }
 
-    private bool CanShoot() => !gunData.reloading && timeSinceLastShot > 1f / (gunData.fireRate / 60f);
-
-    private void Shoot()
+    public void Update()
     {
-
-        if (gunData.currentAmmo > 0 && !GameHandler.Instance.paused && gunModel.activeSelf)
-        {
-            if (CanShoot())
-            {
-                if (Physics.Raycast(cam.position, cam.forward, out RaycastHit hitInfo, gunData.maxDistance))
-                {
-                    IDamagable damageable = hitInfo.transform.GetComponent<IDamagable>();
-                    damageable?.Damage(gunData.damage);
-                }
-
-                gunData.currentAmmo--;
-                timeSinceLastShot = 0;
-                OnGunShot();
-            }
-        }
-    }
-
-    private void Update()
-    {
-        //print(gunData.name + " " + gunModel.activeSelf);
-        if(gunModel.activeSelf)
-        {
-            if(g_name.text != gunData.name) 
-            {
-                g_name.SetText(gunData.name);
-            }
-            
-            if(ammoSize.text != gunData.currentAmmo.ToString() + " / " + gunData.magSize.ToString()) 
-            {
-                ammoSize.SetText(gunData.currentAmmo.ToString() + " / " + gunData.magSize.ToString());
-            }
-            
-            if(image != null) 
-            {
-                if(image.sprite != gunData.gun)
-                {
-                    image.sprite = gunData.gun;
-                }
-            }
-            
-
-        }
-
         timeSinceLastShot += Time.deltaTime;
-        if(GameHandler.Instance != null)
-        {
-            if(GameHandler.Instance.playerInput != null)
-            {
-                if (GameHandler.Instance.firing && !gunData.reloading && gunData.currentAmmo == 0 && !GameHandler.Instance.paused)
-                {
-                    StartReload();
-                }
-            }
-        }
-        
-        
     }
 
-    private void OnGunShot() 
+    private void OnGunShot()
     {
-        try
-        {
-            StartCoroutine(doCoundDown(1));
-        } catch (NullReferenceException) { }
-        
+        PlaySound(3, gunData.onShot);
     }
 
-    public IEnumerator doCoundDown(int seconds)
-    {
-        try
-        {
-            GameHandler.Instance.SetGlitch(0.082f, 0.1f, 0.1f, 0.2f, 0.1f);
-        }
-        catch (NullReferenceException) { }
-        
-        for (int time = seconds; time > 0; time--)
-        {
-             yield return new WaitForSeconds(.125f);
-        }
-        try
-        {
-            GameHandler.Instance.SetGlitch(0, 0, 0, 0, 0);
-        }
-        catch (NullReferenceException) { }
-
-
-
-    }
 }

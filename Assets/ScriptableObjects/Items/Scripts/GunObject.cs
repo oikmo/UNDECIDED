@@ -7,7 +7,7 @@ using UnityEngine;
 public class GunObject : ItemObject
 {
     public GunData data;
-    public string gunType;
+    public GunType gunType;
     public void Awake()
     {
         type = ItemType.Gun;

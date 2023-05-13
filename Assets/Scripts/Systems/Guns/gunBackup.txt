@@ -1,0 +1,154 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using System.Linq;
+
+public class Gun : MonoBehaviour
+{
+    [Header("References")]
+    public GunData gunData;
+    private Transform cam;
+    [SerializeField] private GameObject gunModel;
+    private TMP_Text ammoSize;
+    private TMP_Text g_name;
+
+    int requiredAmmo = 0;
+    float timeSinceLastShot;
+
+    public void StartReload()
+    {
+        if (!gunData.reloading && gameObject.activeSelf)
+            StartCoroutine(Reload());
+    }
+
+    private IEnumerator Reload()
+    {
+        gunData.reloading = true;
+
+        yield return new WaitForSeconds(gunData.reloadTime);
+
+        if (gunData.curAmmoSize != 0)
+        {
+            requiredAmmo = gunData.ammoSize - gunData.curAmmoSize;
+        }
+        else
+        {
+            requiredAmmo = gunData.ammoSize;
+        }
+
+        print(requiredAmmo);
+
+        for(int i = 0; i<GameHandler.Instance.playerInventory.Container.Count - 1; i++)
+        {
+            if(GameHandler.Instance.playerInventory.Container.Any(p => p.ID == GameHandler.Instance.ammoSlot[i].ID && p.item == GameHandler.Instance.ammoSlot[i].item))
+            {
+                if (gunData.type == GunData.GunType.Pistol)
+                {
+                    if(GameHandler.Instance.playerInventory.Container[i].GetType() == typeof(AmmoObject))
+                    {
+                        AmmoObject ammo = GetType(GameHandler.Instance.playerInventory.Container[i].item);
+                    }
+                }
+            }
+            
+        }
+
+        gunData.curAmmoSize = gunData.ammoSize;
+
+        gunData.reloading = false;
+    }
+
+    AmmoObject GetType(ItemObject item)
+    {
+        object temp = item;
+        AmmoObject ammo = (AmmoObject)temp;
+        return ammo;
+    }
+
+    private bool CanShoot() => !gunData.reloading && timeSinceLastShot > 1f / (gunData.fireRate / 60f);
+
+    private void Shoot()
+    {
+
+        if (gunData.curAmmoSize > 0 && !GameHandler.Instance.paused && gunModel.activeSelf)
+        {
+            if (CanShoot())
+            {
+                if (Physics.Raycast(cam.position, cam.forward, out RaycastHit hitInfo, gunData.range))
+                {
+                    IDamagable damageable = hitInfo.transform.GetComponent<IDamagable>();
+                    damageable?.Damage(gunData.damage);
+                }
+
+                gunData.curAmmoSize--;
+                timeSinceLastShot = 0;
+                OnGunShot();
+            }
+        }
+    }
+
+    private void Update()
+    {
+        //print(gunData.name + " " + gunModel.activeSelf);
+        if(gunModel.activeSelf)
+        {
+            if(g_name.text != gunData.name) 
+            {
+                g_name.SetText(gunData.name);
+            }
+            
+            if(ammoSize.text != gunData.curAmmoSize.ToString() + " / " + gunData.ammoSize.ToString()) 
+            {
+                ammoSize.SetText(gunData.curAmmoSize.ToString() + " / " + gunData.ammoSize.ToString());
+            }
+        }
+
+        timeSinceLastShot += Time.deltaTime;
+        if(GameHandler.Instance != null)
+        {
+            if(GameHandler.Instance.playerInput != null)
+            {
+                if (GameHandler.Instance.firing && !gunData.reloading && gunData.curAmmoSize == 0 && !GameHandler.Instance.paused)
+                {
+                    StartReload();
+                }
+            }
+        }
+        
+        
+    }
+
+    private void OnGunShot() 
+    {
+        try
+        {
+            StartCoroutine(doCoundDown(1));
+        } catch (NullReferenceException) { }
+        
+    }
+
+    public IEnumerator doCoundDown(int seconds)
+    {
+        try
+        {
+            GameHandler.Instance.SetGlitch(0.082f, 0.1f, 0.1f, 0.2f, 0.1f);
+        }
+        catch (NullReferenceException) { }
+        
+        for (int time = seconds; time > 0; time--)
+        {
+             yield return new WaitForSeconds(.125f);
+        }
+        try
+        {
+            GameHandler.Instance.SetGlitch(0, 0, 0, 0, 0);
+        }
+        catch (NullReferenceException) { }
+
+
+
+    }
+}

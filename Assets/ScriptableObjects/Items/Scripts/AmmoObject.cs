@@ -6,13 +6,7 @@ using UnityEngine;
 [System.Serializable]
 public class AmmoObject : ItemObject
 {
-    public enum AmmoType
-    {
-        Pistol,
-        Rifle
-    }
-
-    public AmmoType ammoType;
+    public GunType ammoType;
 
     public void Awake()
     {

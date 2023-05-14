@@ -95,6 +95,7 @@
     <Compile Include="Assets\Scripts\Player\Ignore\PlayerMovementAdvancedDone.cs" />
     <Compile Include="Assets\Scripts\Systems\UI\FPS.cs" />
     <Compile Include="Assets\Scripts\Systems\Guns\WeaponSway.cs" />
+    <Compile Include="Assets\Scripts\Systems\Inventory\ItemDragHandler.cs" />
     <Compile Include="Assets\Shaders\Ultimate 10 Plus Shaders\Shaders\Plexus\Plexus.cs" />
     <Compile Include="Assets\ScriptableObjects\Gun\Scripts\GunData.cs" />
     <Compile Include="Assets\Scripts\Systems\SaveSystem\SaveSystem.cs" />
@@ -104,7 +105,6 @@
     <Compile Include="Assets\ScriptableObjects\Items\Scripts\ItemDatabaseObject.cs" />
     <Compile Include="Assets\Scripts\Systems\UI\Menus\DebugMenu.cs" />
     <Compile Include="Assets\LeanTween\Framework\LeanSmooth.cs" />
-    <Compile Include="Assets\ScriptableObjects\Inventory\Scripts\Item.cs" />
     <Compile Include="Assets\Samples\RetroTVFX\2.0.0\Examples\Scripts\UIOptionSelector.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerCam.cs" />
     <Compile Include="Assets\Scripts\Systems\LevelLoader.cs" />
@@ -152,7 +152,8 @@
     <Compile Include="Assets\Scripts\Systems\Wait.cs" />
     <Compile Include="Assets\Scripts\Systems\UI\Facts.cs" />
     <Compile Include="Assets\Scripts\Player\Ignore\PlayerMovementAdvancedFinished.cs" />
-    <Compile Include="Assets\Scripts\Systems\Inventory\ItemDragHandler.cs" />
+    <Compile Include="Assets\Scenes\InventoryTest.cs" />
+    <Compile Include="Assets\Scenes\ItemSlotTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />

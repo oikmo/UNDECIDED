@@ -70,7 +70,7 @@
     <Compile Include="Assets\Shaders\Ultimate 10 Plus Shaders\Scripts\U10PS_MouseRotation.cs" />
     <Compile Include="Assets\LeanTween\Framework\LeanTweenExt.cs" />
     <Compile Include="Assets\Kino\Glitch\DigitalGlitch.cs" />
-    <Compile Include="Assets\Scripts\Systems\Guns\WeaponSwitching.cs" />
+    <Compile Include="Assets\Scripts\Systems\UI\Guns\WeaponSwitching.cs" />
     <Compile Include="Assets\Scripts\Player\Ignore\PhysicsExtension.cs" />
     <Compile Include="Assets\Scripts\Player\Movement\Sliding.cs" />
     <Compile Include="Assets\Scripts\Player\Ignore\FlyCam\CamFlyController.cs" />
@@ -85,7 +85,7 @@
     <Compile Include="Assets\Scripts\Player\PlayerShoot.cs" />
     <Compile Include="Assets\Scripts\Systems\UI\DebugConsole\DebugController.cs" />
     <Compile Include="Assets\Scripts\Systems\DiscordController.cs" />
-    <Compile Include="Assets\Scripts\Systems\Guns\Target.cs" />
+    <Compile Include="Assets\Scripts\Systems\UI\Guns\Target.cs" />
     <Compile Include="Assets\Scripts\Systems\UI\Dialogue\Dialogue.cs" />
     <Compile Include="Assets\Scripts\Systems\UI\Menus\OptionsMenu.cs" />
     <Compile Include="Assets\Scripts\Player\Ignore\BoostPad_MLab_Uncommented.cs" />
@@ -94,7 +94,7 @@
     <Compile Include="Assets\Scripts\Systems\DontDestroyOnLoad.cs" />
     <Compile Include="Assets\Scripts\Player\Ignore\PlayerMovementAdvancedDone.cs" />
     <Compile Include="Assets\Scripts\Systems\UI\FPS.cs" />
-    <Compile Include="Assets\Scripts\Systems\Guns\WeaponSway.cs" />
+    <Compile Include="Assets\Scripts\Systems\UI\Guns\WeaponSway.cs" />
     <Compile Include="Assets\Scripts\Systems\Inventory\ItemDragHandler.cs" />
     <Compile Include="Assets\Shaders\Ultimate 10 Plus Shaders\Shaders\Plexus\Plexus.cs" />
     <Compile Include="Assets\ScriptableObjects\Gun\Scripts\GunData.cs" />
@@ -133,7 +133,7 @@
     <Compile Include="Assets\Scripts\Systems\Inventory\DisplayInventory.cs" />
     <Compile Include="Assets\Scripts\Player\Ignore\BallThroughHoop.cs" />
     <Compile Include="Assets\Scripts\Systems\Debug\TouchScene.cs" />
-    <Compile Include="Assets\Scripts\Systems\Guns\Gun.cs" />
+    <Compile Include="Assets\Scripts\Systems\UI\Guns\Gun.cs" />
     <Compile Include="Assets\Scripts\Systems\UI\Menus\MainMenu.cs" />
     <Compile Include="Assets\Scripts\Systems\CutsceneStart.cs" />
     <Compile Include="Assets\Scripts\Player\Ignore\SlidingDone.cs" />
@@ -152,8 +152,9 @@
     <Compile Include="Assets\Scripts\Systems\Wait.cs" />
     <Compile Include="Assets\Scripts\Systems\UI\Facts.cs" />
     <Compile Include="Assets\Scripts\Player\Ignore\PlayerMovementAdvancedFinished.cs" />
-    <Compile Include="Assets\Scenes\InventoryTest.cs" />
-    <Compile Include="Assets\Scenes\ItemSlotTest.cs" />
+    <Compile Include="Assets\Scenes\InventoryItem.cs" />
+    <Compile Include="Assets\Scenes\InventorySlot.cs" />
+    <Compile Include="Assets\Scenes\InventoryManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
@@ -163,7 +164,7 @@
     <None Include="Assets\Shaders\Ultimate 10 Plus Shaders\Shaders\Edge Detection.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\Shaders\Ultimate 10 Plus Shaders\Shaders\Grass Sway.shader" />
-    <None Include="Assets\Scripts\Systems\Guns\gunBackup.txt" />
+    <None Include="Assets\Scripts\Systems\UI\Guns\gunBackup.txt" />
     <None Include="Assets\Shaders\Ultimate 10 Plus Shaders\Shaders\Blur.shader" />
     <None Include="Assets\LeanTween\ReadMe.txt" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />

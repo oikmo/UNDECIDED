@@ -10,7 +10,7 @@ using System.Runtime.Serialization;
 public class InventoryObject : ScriptableObject//, ISerializationCallbackReceiver
 {
     public ItemDatabaseObject database;
-    public List<InventorySlot> Container = new List<InventorySlot>();
+    public List<invSlot> Container = new List<invSlot>();
     public bool isError;
 
     public void AddItem(ItemObject _item, int _amount)
@@ -26,7 +26,7 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
 
         if(_amount != 0)
         {
-            Container.Add(new InventorySlot(database.GetID[_item], _item, _amount));
+            Container.Add(new invSlot(database.GetID[_item], _item, _amount));
         } 
         
     }
@@ -82,13 +82,13 @@ public class InventoryObject : ScriptableObject//, ISerializationCallbackReceive
 }
 
 [System.Serializable]
-public class InventorySlot
+public class invSlot
 {
     public int ID;
     public ItemObject item;
     public int amount;
 
-    public InventorySlot(int _id, ItemObject _item, int _amount)
+    public invSlot(int _id, ItemObject _item, int _amount)
     {
         ID = _id;
         item = _item;
@@ -99,7 +99,7 @@ public class InventorySlot
         amount += value;
     }
     
-    public bool Equals(InventorySlot other)
+    public bool Equals(invSlot other)
     {
         if (this.ID == other.ID && this.item == other.item && this.amount == other.amount)
         {

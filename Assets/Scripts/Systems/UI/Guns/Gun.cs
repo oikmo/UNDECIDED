@@ -52,7 +52,7 @@ public class Gun : MonoBehaviour
 
     private IEnumerator Reload()
     {
-        InventorySlot ammoItem = null;
+        invSlot ammoItem = null;
         AmmoObject ammo = null;
         gunData.reloading = true;
         yield return new WaitForSeconds(gunData.reloadTime);

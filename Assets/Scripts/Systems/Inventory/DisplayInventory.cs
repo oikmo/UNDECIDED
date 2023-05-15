@@ -6,7 +6,7 @@ using TMPro;
 public class DisplayInventory : MonoBehaviour
 {
     public InventoryObject inventory;
-    Dictionary<InventorySlot, GameObject> itemsDisplayed = new Dictionary<InventorySlot, GameObject>();
+    Dictionary<invSlot, GameObject> itemsDisplayed = new Dictionary<invSlot, GameObject>();
 
     void Start()
     {

@@ -29,7 +29,7 @@ public class GameHandler : MonoBehaviour
     #endregion
     
     #region player vars
-    public InventorySlot[] refAmmoSlot;
+    public invSlot[] refAmmoSlot;
     public PlayerMovementAdvanced pm;
     public InventoryObject playerInventory;
     public PlayerHealth pHealth;

@@ -45,9 +45,10 @@ public class InventoryManager : MonoBehaviour
                 {
                     itemInSlot.count++;
                     itemInSlot.RefreshCount();
+                    return true;
                 }
                 
-                return true;
+                
             }
         }
         //check for empty slot

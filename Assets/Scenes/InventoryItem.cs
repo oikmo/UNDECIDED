@@ -35,7 +35,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnBeginDrag(PointerEventData eventData)
     {
         InventoryManager inventoryManager = GameObject.Find("InventoryManager").GetComponent<InventoryManager>();
-        if (inventoryManager.isOn()) { print("!"); return; }
+        if (!inventoryManager.isOn()) { print("!"); return; }
         image.raycastTarget = false;
         parentAfterDrag = transform.parent;
         transform.SetParent(transform.root);
@@ -44,14 +44,14 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnDrag(PointerEventData eventData)
     {
         InventoryManager inventoryManager = GameObject.Find("InventoryManager").GetComponent<InventoryManager>();
-        if (inventoryManager.isOn()) { print("!"); return; }
+        if (!inventoryManager.isOn()) { print("!"); return; }
         transform.position = Input.mousePosition;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
         InventoryManager inventoryManager = GameObject.Find("InventoryManager").GetComponent<InventoryManager>();
-        if (inventoryManager.isOn()) { print("!"); return; }
+        if (!inventoryManager.isOn()) { print("!"); return; }
         image.raycastTarget = true;
         transform.SetParent(parentAfterDrag);
         transform.position = parentAfterDrag.position;

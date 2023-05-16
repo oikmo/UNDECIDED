@@ -7,10 +7,10 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 {
     public void OnDrop(PointerEventData eventData)
     {
+        print("!");
         if (transform.childCount == 0) {
             InventoryItem invItem = eventData.pointerDrag.GetComponent<InventoryItem>();
             invItem.parentAfterDrag = transform;
         }
     }
-    
 }

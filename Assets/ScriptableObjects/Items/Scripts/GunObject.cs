@@ -10,6 +10,7 @@ public class GunObject : ItemObject
     public GunType gunType;
     public void Awake()
     {
+        isStackable = false;
         type = ItemType.Gun;
     }
 }

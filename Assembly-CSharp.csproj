@@ -76,6 +76,7 @@
     <Compile Include="Assets\Scripts\Player\Ignore\FlyCam\CamFlyController.cs" />
     <Compile Include="Assets\LeanTween\Framework\LTSeq.cs" />
     <Compile Include="Assets\Samples\RetroTVFX\2.0.0\Examples\Scripts\ToggleCRTEffects.cs" />
+    <Compile Include="Assets\Scenes\InventoryManager.cs" />
     <Compile Include="Assets\Scripts\Player\Ignore\NextGenWallRunning.cs" />
     <Compile Include="Assets\Scripts\Systems\UI\Menus\PauseMenu.cs" />
     <Compile Include="Assets\ScriptableObjects\Items\Scripts\EnergyObject.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Assets\Scripts\Systems\UI\Dialogue\Dialogue.cs" />
     <Compile Include="Assets\Scripts\Systems\UI\Menus\OptionsMenu.cs" />
     <Compile Include="Assets\Scripts\Player\Ignore\BoostPad_MLab_Uncommented.cs" />
+    <Compile Include="Assets\Scenes\InventorySlot.cs" />
     <Compile Include="Assets\Scripts\Systems\Input\RebindingUI.cs" />
     <Compile Include="Assets\Scripts\Systems\UI\UISway.cs" />
     <Compile Include="Assets\Scripts\Systems\DontDestroyOnLoad.cs" />
@@ -131,6 +133,7 @@
     <Compile Include="Assets\Scripts\Systems\NoDestroy.cs" />
     <Compile Include="Assets\Scripts\Player\Footsteps.cs" />
     <Compile Include="Assets\Scripts\Systems\Inventory\DisplayInventory.cs" />
+    <Compile Include="Assets\Scenes\InventoryItem.cs" />
     <Compile Include="Assets\Scripts\Player\Ignore\BallThroughHoop.cs" />
     <Compile Include="Assets\Scripts\Systems\Debug\TouchScene.cs" />
     <Compile Include="Assets\Scripts\Systems\UI\Guns\Gun.cs" />
@@ -152,9 +155,8 @@
     <Compile Include="Assets\Scripts\Systems\Wait.cs" />
     <Compile Include="Assets\Scripts\Systems\UI\Facts.cs" />
     <Compile Include="Assets\Scripts\Player\Ignore\PlayerMovementAdvancedFinished.cs" />
-    <Compile Include="Assets\Scenes\InventoryItem.cs" />
-    <Compile Include="Assets\Scenes\InventorySlot.cs" />
-    <Compile Include="Assets\Scenes\InventoryManager.cs" />
+    <Compile Include="Assets\Scenes\itemTest.cs" />
+    <Compile Include="Assets\Scripts\Systems\TransformExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
@@ -170,7 +172,6 @@
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\Shaders\Ultimate 10 Plus Shaders\Shaders\Plexus\Plexus.compute" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
-    <None Include="Assets\Packages\TagLibSharp.2.3.0\lib\net462\TagLibSharp.dll" />
     <None Include="Assets\LeanTween\License.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
@@ -194,7 +195,6 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
     <None Include="Assets\Shaders\Ultimate 10 Plus Shaders\Shaders\Lava3D.shader" />
     <None Include="Assets\Shaders\Ultimate 10 Plus Shaders\Shaders\Force Field.shader" />
-    <None Include="Assets\Packages\TagLibSharp.2.3.0\lib\net462\TaglibSharp.xml" />
     <None Include="Assets\Shaders\Ultimate 10 Plus Shaders\Shaders\Simple Sine Wave.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
@@ -423,9 +423,6 @@
     </Reference>
     <Reference Include="UnityEditor.UnityConnectModule">
       <HintPath>D:\Unity\2020.3.25f1\Editor\Data\Managed\UnityEngine\UnityEditor.UnityConnectModule.dll</HintPath>
-    </Reference>
-    <Reference Include="TagLibSharp">
-      <HintPath>Assets\Packages\TagLibSharp.2.3.0\lib\net462\TagLibSharp.dll</HintPath>
     </Reference>
     <Reference Include="DOTween">
       <HintPath>Assets\Plugins\Demigiant\DOTween\DOTween.dll</HintPath>

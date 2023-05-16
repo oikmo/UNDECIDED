@@ -55,7 +55,6 @@
   <ItemGroup>
     <Compile Include="Assets\LeanTween\Editor\LeanTweenDocumentationEditor.cs" />
     <Compile Include="Assets\Kino\Glitch\Editor\AnalogGlitchEditor.cs" />
-    <Compile Include="Assets\Editor\GuidInspector.cs" />
     <Compile Include="Assets\Editor\EnterPlayMode.cs" />
     <Compile Include="Assets\Kino\Glitch\Editor\DigitalGlitchEditor.cs" />
   </ItemGroup>

@@ -11,8 +11,7 @@ using Kino;
 /// The <c>GameHandler</c> class which handles the entire game
 ///</summary>
 [System.Serializable]
-public class GameHandler : MonoBehaviour
-{
+public class GameHandler : MonoBehaviour {
     ///<summary>
     /// The Instance of GameHandler (singleton)
     ///</summary>
@@ -27,17 +26,15 @@ public class GameHandler : MonoBehaviour
     public DebugMenu dMenu;
     public GameObject deadMenu;
     #endregion
-    
+
     #region player vars
-    public invSlot[] refAmmoSlot;
+    public InventoryManager playerInventory;
     public PlayerMovementAdvanced pm;
-    public InventoryObject playerInventory;
     public PlayerHealth pHealth;
     public PlayerStuff pStuff;
     public GameObject dialogue, cursor, canvas;
     public CanvasGroup vHealth, vStamina;
     public PlayerInputController playerInput;
-    [SerializeField] private GameObject ui_inventory;
     public AudioSource death;
     #endregion
 
@@ -62,26 +59,21 @@ public class GameHandler : MonoBehaviour
     bool isGlitch;
     #endregion
 
-    void Awake()
-    {
+    void Awake() {
         // If there is an instance, and it's not me, delete myself.
-        if (Instance != null && Instance != this)
-        {
+        if (Instance != null && Instance != this) {
             Destroy(this);
-        }
-        else
-        {
+        } else {
             Instance = this;
 
             DontDestroyOnLoad(Instance);
         }
 
-        if(playerInput == null)
+        if (playerInput == null)
             playerInput = new PlayerInputController();
     }
 
-    void Start()
-    {
+    void Start() {
         aGlitch = cam.gameObject.GetComponent<AnalogGlitch>();
         dGlitch = cam.gameObject.GetComponent<DigitalGlitch>();
         Time.timeScale = 1f;
@@ -89,17 +81,14 @@ public class GameHandler : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    private void Update()
-    {
-        if(GetComponent<PlayerInput>() != null)
-        {
+    private void Update() {
+        if (GetComponent<PlayerInput>() != null) {
             curDevice = GetComponent<PlayerInput>().currentControlScheme.ToLower();
         }
 
         #region input checkers (mostly bools but sometimes float)
-        if (!paused && !cutscene)
-        {
-            if(horizontalInput != move.ReadValue<Vector2>().x) { horizontalInput = move.ReadValue<Vector2>().x; }
+        if (!paused && !cutscene) {
+            if (horizontalInput != move.ReadValue<Vector2>().x) { horizontalInput = move.ReadValue<Vector2>().x; }
             if (verticalInput != move.ReadValue<Vector2>().y) { verticalInput = move.ReadValue<Vector2>().y; }
             if (mouseX != look.ReadValue<Vector2>().x) { mouseX = look.ReadValue<Vector2>().x; }
             if (mouseY != look.ReadValue<Vector2>().y) { mouseY = look.ReadValue<Vector2>().y; }
@@ -113,16 +102,13 @@ public class GameHandler : MonoBehaviour
             if (reloading != reload.ReadValue<float>() > 0.1f) { reloading = reload.ReadValue<float>() > 0.1f; }
             pausing = pause.ReadValue<float>() > 0.7f;
             if (interacting != interact.ReadValue<float>() > 0.1f) { interacting = interact.ReadValue<float>() > 0.1f; }
-        }
-        else if(paused || cutscene)
-        {
-            if(horizontalInput != 0) { horizontalInput = 0; }
-            if(verticalInput != 0) { verticalInput = 0; }
-            if(mouseX != 0) { mouseX = 0; }
-            if(mouseY != 0) { mouseY = 0; }
-            
-            if(sprinting != false && crouching != false && jumping != false && g_left != false && g_right != false && equipping != false && firing != false && reloading != false && pausing != false && interacting != false)
-            {
+        } else if (paused || cutscene) {
+            if (horizontalInput != 0) { horizontalInput = 0; }
+            if (verticalInput != 0) { verticalInput = 0; }
+            if (mouseX != 0) { mouseX = 0; }
+            if (mouseY != 0) { mouseY = 0; }
+
+            if (sprinting != false && crouching != false && jumping != false && g_left != false && g_right != false && equipping != false && firing != false && reloading != false && pausing != false && interacting != false) {
                 sprinting = false;
                 crouching = false;
                 jumping = false;
@@ -134,69 +120,56 @@ public class GameHandler : MonoBehaviour
                 //pausing = false;
                 interacting = false;
             }
-            
+
         }
         #endregion
 
         #region null checker
         // If there is an instance, and it's not me, delete myself.
-        if (Instance != null && Instance != this)
-        {
+        if (Instance != null && Instance != this) {
             Destroy(this);
-        }
-        else
-        {
+        } else {
             Instance = this;
-
-            DontDestroyOnLoad(this);
-            DontDestroyOnLoad(Instance);
+            //DontDestroyOnLoad(Instance);
         }
 
-        if (Music == null)
-        {
-            if (GameObject.Find("Music"))
-            {
+        if (Music == null) {
+            if (GameObject.Find("Music")) {
                 Music = GameObject.Find("Music").GetComponent<AudioSource>();
-                if (Music != null)
-                {
+                if (Music != null) {
                     Music.Play();
                     Music.loop = true;
                 }
             }
         }
-        if(canvas == null) { canvas = GameObject.Find("Canvas (Important)"); }
+        if (canvas == null) { canvas = GameObject.Find("Canvas (Important)"); }
         if (deadMenu == null) { deadMenu = GameObject.Find("DeathScreen"); }
         if (cam == null) { cam = GameObject.Find("PlayerCam").GetComponent<Camera>(); aGlitch = cam.gameObject.GetComponent<AnalogGlitch>(); dGlitch = cam.gameObject.GetComponent<DigitalGlitch>(); }
 
-        if(vHealth == null) { vHealth = GameObject.Find("HealthVignette").GetComponent<CanvasGroup>(); }
+        if (vHealth == null) { vHealth = GameObject.Find("HealthVignette").GetComponent<CanvasGroup>(); }
         if (vStamina == null) { vStamina = GameObject.Find("StaminaVignette").GetComponent<CanvasGroup>(); }
 
         if (pm == null) { pm = GameObject.Find("Player").GetComponent<PlayerMovementAdvanced>(); }
-        if(pHealth == null) { pHealth = GameObject.Find("Player").GetComponent<PlayerHealth>(); }
+        if (pHealth == null) { pHealth = GameObject.Find("Player").GetComponent<PlayerHealth>(); }
         if (pStuff == null) { pStuff = pm.gameObject.GetComponent<PlayerStuff>(); }
-        if(dialogue == null) { dialogue = GameObject.Find("Dialogue"); }
-        if(death == null) 
-        {
+        if (dialogue == null) { dialogue = GameObject.Find("Dialogue"); }
+        if (death == null) {
             AudioSource[] sources = (AudioSource[])FindObjectsOfType(typeof(AudioSource));
-            foreach(AudioSource source in sources)
-            {
-                if(source.clip.name == "death")
-                {
+            foreach (AudioSource source in sources) {
+                if (source.clip.name == "death") {
                     //print("found death source!");
                     death = source;
                 }
             }
-            
+
         }
         #endregion
 
         #region glitch
-        if (dGlitch != null)
-        {
+        if (dGlitch != null) {
             if (dGlitch.intensity != intensity) { dGlitch.intensity = intensity; }
         }
-        if (aGlitch != null)
-        {
+        if (aGlitch != null) {
             if (aGlitch.scanLineJitter != scanLineJitter) { aGlitch.scanLineJitter = scanLineJitter; }
             if (aGlitch.verticalJump != verticalJump) { aGlitch.verticalJump = verticalJump; }
             if (aGlitch.horizontalShake != horizontalShake) { aGlitch.horizontalShake = horizontalShake; }
@@ -205,46 +178,34 @@ public class GameHandler : MonoBehaviour
         #endregion
 
         #region pausing
-        if (pMenu.isPaused || oMenu.isOptions || playerAlreadyDead || dialogue.activeSelf)
-        {
+        if (pMenu.isPaused || oMenu.isOptions || playerAlreadyDead || dialogue.activeSelf) {
             paused = true;
-            
-            if(!isGlitch)
-            {
-                if(playerAlreadyDead)
-                {
+
+            if (!isGlitch) {
+                if (playerAlreadyDead) {
                     SetGlitch(1f, 0.4f, 0.2f, 0.2f, 0.4f);
                     Time.timeScale = 1f;
-                }
-                else
-                {
+                } else {
                     SetGlitch(0.084f, 0.4f, 0.2f, 0.2f, 0.4f);
                     Time.timeScale = 0f;
                 }
-                
+
                 isGlitch = true;
             }
 
-            if(pMenu.isPaused) 
-            {
+            if (pMenu.isPaused) {
                 pMenu.pMenu.SetActive(true);
                 oMenu.gO.SetActive(false);
                 deadMenu.SetActive(false);
-            } 
-            else if(oMenu.isOptions) 
-            {
+            } else if (oMenu.isOptions) {
                 pMenu.pMenu.SetActive(false);
                 oMenu.gO.SetActive(true);
                 deadMenu.SetActive(false);
-            }
-            else if(playerAlreadyDead)
-            {
+            } else if (playerAlreadyDead) {
                 pMenu.pMenu.SetActive(false);
                 oMenu.gO.SetActive(false);
                 deadMenu.SetActive(true);
-            }
-            else
-            {
+            } else {
                 pMenu.pMenu.SetActive(false);
                 oMenu.gO.SetActive(false);
                 deadMenu.SetActive(false);
@@ -252,12 +213,9 @@ public class GameHandler : MonoBehaviour
 
             dMenu.gO.SetActive(false);
             isInventory = false;
-            ui_inventory.SetActive(false);
-        }
-        else
-        {
-            if (isGlitch)
-            {
+            playerInventory.mainInv.SetActive(false);
+        } else {
+            if (isGlitch) {
                 SetGlitch(0, 0, 0, 0, 0);
                 isGlitch = false;
                 Time.timeScale = 1f;
@@ -267,93 +225,74 @@ public class GameHandler : MonoBehaviour
         #endregion
 
         #region mouseLock (debug)
-        if (mouse || paused)
-        {
+        if (mouse || paused) {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             //Time.timeScale = 0f;
-        } 
-        else if(!mouse || !paused)
-        {
+        } else if (!mouse || !paused) {
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
             //Time.timeScale = 1f;
-        }
-        else if(isInventory && !paused && !mouse)
-        {
+        } else if (isInventory && !paused && !mouse) {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
 
-        if (Input.GetKeyDown(KeyCode.M) && !paused)
-        {
+        if (Input.GetKeyDown(KeyCode.M) && !paused) {
             mouse = !mouse;
         }
-        
-        if(Input.GetKeyDown(KeyCode.Escape) && mouse)
-        {
+
+        if (Input.GetKeyDown(KeyCode.Escape) && mouse) {
             mouse = false;
         }
         #endregion
 
         #region inventory
-        if (isInventory)
-        {
+        if (isInventory) {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
-        if (Input.GetKeyDown(KeyCode.I) && !paused)
-        {
+        if (Input.GetKeyDown(KeyCode.I) && !paused) {
             float currentTime = Time.time;
 
             float diffSecs = currentTime - lastPressTime;
-            if (diffSecs >= cooldown)
-            {
+            if (diffSecs >= cooldown) {
                 lastPressTime = currentTime;
                 isInventory = !isInventory;
             }
-            
+
         }
 
-        ui_inventory.SetActive(isInventory);
+        playerInventory.mainInv.SetActive(isInventory);
         #endregion
 
-        if(GameObject.Find("cheaterSign") != null)
-        {
-            if(HECHEATED) 
-            {
-                GameObject.Find("cheaterSign").GetComponent<CanvasGroup>().alpha = 1f;  
+        if (GameObject.Find("cheaterSign") != null) {
+            if (HECHEATED) {
+                GameObject.Find("cheaterSign").GetComponent<CanvasGroup>().alpha = 1f;
+            } else {
+                GameObject.Find("cheaterSign").GetComponent<CanvasGroup>().alpha = 0f;
             }
-            else
-            {
-                GameObject.Find("cheaterSign").GetComponent<CanvasGroup>().alpha = 0f;  
-            }   
         }
     }
 
-    public void Die()
-    {
-        if(!playerAlreadyDead)
-        {
+    public void Die() {
+        if (!playerAlreadyDead) {
             playerAlreadyDead = true;
-            if(death != null)
-            {
+            if (death != null) {
                 death.Play();
                 deadMenu.SetActive(true);
             }
         }
     }
 
-    public void ResetDie()
-    {
+    public void ResetDie() {
         death.Stop();
         playerAlreadyDead = false;
         deadMenu.SetActive(false);
-        SetGlitch(0,0,0,0,0);
+        SetGlitch(0, 0, 0, 0, 0);
     }
 
-    public void SetGlitch(float _intensity, float _scanLineJitter, float _verticalJump, float _horizontalShake, float _colorDrift)
-    {
+    public void SetGlitch(float _intensity, float _scanLineJitter, float _verticalJump, float _horizontalShake, float _colorDrift) {
         intensity = _intensity;
         scanLineJitter = _scanLineJitter;
         verticalJump = _verticalJump;
@@ -362,85 +301,71 @@ public class GameHandler : MonoBehaviour
     }
 
     #region InputAction.CallbackContext hell
-    public void Interact(InputAction.CallbackContext ctx)
-    {
+    public void Interact(InputAction.CallbackContext ctx) {
         if (!ctx.performed) { return; }
         interact = ctx;
     }
-    public void Move(InputAction.CallbackContext ctx)
-    {
-        if(!ctx.performed) { return; }
+    public void Move(InputAction.CallbackContext ctx) {
+        if (!ctx.performed) { return; }
         move = ctx;
     }
 
-    public void Look(InputAction.CallbackContext ctx)
-    {
-        if(!ctx.performed) { return; }
+    public void Look(InputAction.CallbackContext ctx) {
+        if (!ctx.performed) { return; }
         look = ctx;
     }
 
-    public void Sprint(InputAction.CallbackContext ctx)
-    {
-        if(!ctx.performed) {return;}
+    public void Sprint(InputAction.CallbackContext ctx) {
+        if (!ctx.performed) { return; }
         sprint = ctx;
     }
 
-    public void Crouch(InputAction.CallbackContext ctx)
-    {
-        if(!ctx.performed) {return;}
+    public void Crouch(InputAction.CallbackContext ctx) {
+        if (!ctx.performed) { return; }
         crouch = ctx;
     }
 
-    public void Jump(InputAction.CallbackContext ctx)
-    {
-        if(!ctx.performed) { return; }
+    public void Jump(InputAction.CallbackContext ctx) {
+        if (!ctx.performed) { return; }
         jump = ctx;
     }
 
-    public void G_Left(InputAction.CallbackContext ctx)
-    {
-        if(!ctx.performed) { return; }
+    public void G_Left(InputAction.CallbackContext ctx) {
+        if (!ctx.performed) { return; }
         g_left_ctx = ctx;
     }
 
-    public void G_Right(InputAction.CallbackContext ctx)
-    {
+    public void G_Right(InputAction.CallbackContext ctx) {
         if (!ctx.performed) { return; }
         g_right_ctx = ctx;
     }
 
-    public void Equip(InputAction.CallbackContext ctx)
-    {
+    public void Equip(InputAction.CallbackContext ctx) {
         if (!ctx.performed) { return; }
         equip = ctx;
     }
 
-    public void Reload(InputAction.CallbackContext ctx)
-    {
+    public void Reload(InputAction.CallbackContext ctx) {
         if (!ctx.performed) { return; }
         reload = ctx;
     }
-    public void Fire(InputAction.CallbackContext ctx)
-    {
+    public void Fire(InputAction.CallbackContext ctx) {
         if (!ctx.performed) { return; }
         fire = ctx;
     }
 
-    public void Pause(InputAction.CallbackContext ctx)
-    {
+    public void Pause(InputAction.CallbackContext ctx) {
         if (!ctx.performed) { return; }
         pause = ctx;
     }
 
-    public void Inventory(InputAction.CallbackContext ctx)
-    {
-        if(!ctx.performed) { return; }
+    public void Inventory(InputAction.CallbackContext ctx) {
+        if (!ctx.performed) { return; }
         inventory = ctx;
     }
     #endregion
 
-    public static void ClampToWindow(Vector2 MyMouse, RectTransform panelRectTransform, RectTransform parentRectTransform)
-    {
+    public static void ClampToWindow(Vector2 MyMouse, RectTransform panelRectTransform, RectTransform parentRectTransform) {
         panelRectTransform.transform.position = MyMouse;
 
         Vector2 pos = panelRectTransform.localPosition;
@@ -454,13 +379,11 @@ public class GameHandler : MonoBehaviour
         panelRectTransform.localPosition = pos;
     }
 
-    public static int GetActiveScene()
-    {
+    public static int GetActiveScene() {
         return SceneManager.GetActiveScene().buildIndex - 2;
     }
 
-    public static string NameFromIndex(int BuildIndex)
-    {
+    public static string NameFromIndex(int BuildIndex) {
         string path = SceneUtility.GetScenePathByBuildIndex(BuildIndex);
         int slash = path.LastIndexOf('/');
         string name = path.Substring(slash + 1);
@@ -473,14 +396,12 @@ public class GameHandler : MonoBehaviour
 ///Room class (do i even need this?)
 ///</summary>
 [System.Serializable]
-public class Room 
-{
+public class Room {
     public string ID;
     public int checkpoint;
     public int scene;
 
-    public Room(string _ID, int _checkpoint, int _scene)
-    {
+    public Room(string _ID, int _checkpoint, int _scene) {
         ID = _ID;
         checkpoint = _checkpoint;
         scene = _scene;

@@ -22,6 +22,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, 
 
     public void Deselect()
     {
+        //print("deselect!");
         image.pixelsPerUnitMultiplier = notSelectedSize;
         image.color = notSelectedColor;
     }

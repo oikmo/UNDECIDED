@@ -8,7 +8,6 @@ public class InventoryManager : MonoBehaviour {
     public GameObject mainInv;
     public GameObject toolBar;
 
-    private float nextKey = -1f;
     int selectedSlot = -1;
     void ChangeSelectedSlot(int newValue) {
         if (selectedSlot >= 0) {
@@ -19,22 +18,29 @@ public class InventoryManager : MonoBehaviour {
 
     }
     public void Update() {
-        if (Input.GetKey(KeyCode.I) && Time.time > nextKey) {
-            nextKey = Time.time + 0.2f;
-            mainInv.SetActive(!mainInv.activeSelf);
+        if (Input.GetKeyDown(KeyCode.Alpha0)) {
+            inventorySlots[0].Deselect();
+            inventorySlots[1].Deselect();
         }
 
         if (Input.inputString != null) {
             bool isNumber = int.TryParse(Input.inputString, out int number);
-            if (isNumber && number > 0 && number < 8) {
-                ChangeSelectedSlot(number - 1);
+            if (isNumber && number > 0 && number < 3) {
+                if (Input.GetKeyDown(KeyCode.Alpha0)) {
+                    //print("hiii!");
+                    inventorySlots[0].Deselect();
+                    inventorySlots[1].Deselect();
+                    selectedSlot = -1;
+                } else { ChangeSelectedSlot(number - 1); }
+                
+                
             }
         }
 
         if (isOn() && toolBarPos().y != -177) {
             TransformExtentions.SetLocalY(toolBar.transform, -177);
-        } else if (!isOn() && toolBarPos().y != 234) {
-            TransformExtentions.SetLocalY(toolBar.transform, 234);
+        } else if (!isOn() && toolBarPos().y != 194.3f) {
+            TransformExtentions.SetLocalY(toolBar.transform, 194.3F);
         }
 
     }
@@ -79,6 +85,14 @@ public class InventoryManager : MonoBehaviour {
         return toolBar.transform.position;
     }
 
+    public ItemObject GetItemByIndex(int i) {
+        return inventorySlots[i].GetComponentInChildren<InventoryItem>().item;
+    }
+
+    public InventoryItem GetInvItemByIndex(int i) {
+        return inventorySlots[i].GetComponentInChildren<InventoryItem>();
+    }
+
     public ItemObject GetSelectedItem() {
         InventoryItem itemInSlot = inventorySlots[selectedSlot].GetComponentInChildren<InventoryItem>();
         if (itemInSlot != null) {
@@ -106,3 +120,4 @@ public class InventoryManager : MonoBehaviour {
         return null;
     }
 }
+ 

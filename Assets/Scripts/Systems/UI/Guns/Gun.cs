@@ -52,23 +52,19 @@ public class Gun : MonoBehaviour
 
     private IEnumerator Reload()
     {
-        invSlot ammoItem = null;
+        InventoryItem ammoItem = null;
         AmmoObject ammo = null;
         gunData.reloading = true;
         yield return new WaitForSeconds(gunData.reloadTime);
 
-        for (int i = 0; i < GameHandler.Instance.playerInventory.Container.Count - 1; i++)
+        for (int i = 0; i < GameHandler.Instance.playerInventory.inventorySlots.Length; i++)
         {
-            if (GameHandler.Instance.playerInventory.Container.Any(p => p.ID == GameHandler.Instance.refAmmoSlot[i].ID && p.item == GameHandler.Instance.refAmmoSlot[i].item))
-            {
-                if (GameHandler.Instance.playerInventory.Container[i].GetType() == typeof(AmmoObject))
-                {
-                    ammoItem = GameHandler.Instance.playerInventory.Container[i];
-                    
-                    if (GetType(ammoItem.item).ammoType == gunData.item.gunType)
-                    {
-                        ammo = GetType(ammoItem.item);
-                    }
+            //if (GameHandler.Instance.playerInventory.Container.Any(p => p.ID == GameHandler.Instance.refAmmoSlot[i].ID && p.item == GameHandler.Instance.refAmmoSlot[i].item))
+            if (GameHandler.Instance.playerInventory.GetItemByIndex(i).GetType() == typeof(AmmoObject)) {
+                ammoItem = GameHandler.Instance.playerInventory.GetInvItemByIndex(i);
+
+                if (GetType(ammoItem.item).ammoType == gunData.item.gunType) {
+                    ammo = GetType(ammoItem.item);
                 }
             }
 
@@ -79,10 +75,10 @@ public class Gun : MonoBehaviour
             if (gunData.curAmmoSize == 0) { requiredAmmo = gunData.ammoSize; }
             else { requiredAmmo = gunData.curAmmoSize - gunData.ammoSize; }
 
-            if (!(ammoItem.amount - requiredAmmo < 0))
+            if (!(ammoItem.count - requiredAmmo < 0))
             {
                 PlaySound(2, gunData.onReload);
-                ammoItem.amount -= requiredAmmo;
+                ammoItem.count -= requiredAmmo;
                 gunData.curAmmoSize += requiredAmmo;
             }
         }

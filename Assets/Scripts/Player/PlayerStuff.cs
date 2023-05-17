@@ -12,7 +12,6 @@ public class PlayerStuff : MonoBehaviour
     [HideInInspector] public int version = 1;
 
     [Header("Player")]
-    public InventoryObject inventory;
     public GameObject player;
     public GameObject errorNotice;
 
@@ -47,18 +46,6 @@ public class PlayerStuff : MonoBehaviour
 
     void Update()
     {
-        if (inventory.isError)
-        {
-            errorNotice.SetActive(true);
-            if (Input.anyKey)
-            {
-                inventory.isError = false;
-            }
-        }
-        else
-        {
-            errorNotice.SetActive(false);
-        }
 
         if(level != GameHandler.GetActiveScene())
         {
@@ -72,7 +59,6 @@ public class PlayerStuff : MonoBehaviour
     {
         SaveSystem.setName("save");
         SaveSystem.SavePlayer();
-        inventory.Save();
     }
 
     public void loadPlayer()
@@ -83,7 +69,6 @@ public class PlayerStuff : MonoBehaviour
         GameHandler.Instance.pHealth.curhealth = data.health;
         checkpoint = data.checkpoint;
         GameHandler.Instance.HECHEATED = data.HECHEATED;
-        inventory.Load();
         
         GameObject.Find("PauseMenuHolder").GetComponent<PauseMenu>().ResumeGame();
 
@@ -125,6 +110,6 @@ public class PlayerStuff : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        inventory.Container.Clear();
+        
     }
 }

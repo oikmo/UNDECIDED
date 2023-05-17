@@ -29,7 +29,7 @@ public class Pickup : MonoBehaviour
     [SerializeField]
 
     //private DialogueTrigger trigger;
-    private ItemObject itemBeingPickedUp;
+    private InventoryItem itemBeingPickedUp;
     private Dialogue dialogueInteract;
     private CutsceneStart cutsceneStart;
     private float currentPickupTimerElapsed;
@@ -105,7 +105,7 @@ public class Pickup : MonoBehaviour
 
         if(itemBeingPickedUp != null && HasItemTargetted())
         {
-            //pickupTime = itemBeingPickedUp.item.pickUpTime;
+            pickupTime = itemBeingPickedUp.item.pickUpTime;
         }
 
         if(dialogueInteract != null && HasDialogueTargetted())
@@ -139,7 +139,7 @@ public class Pickup : MonoBehaviour
         if(currentPickupTimerElapsed >= pickupTime)
         {
             //add item to inv e.g Inventory.addItem()
-            //itemBeingPickedUp.();
+            GameHandler.Instance.playerInventory.AddItem(itemBeingPickedUp.item);
         }
     }
     private void IncrementPickupProgressAndTryDialogue()
@@ -173,7 +173,7 @@ public class Pickup : MonoBehaviour
         RaycastHit hitInfo;
         if(Physics.Raycast(ray, out hitInfo, 2f))
         {
-            var hitItem = hitInfo.collider.GetComponent<ItemObject>();
+            var hitItem = hitInfo.collider.GetComponent<InventoryItem>();
 
             if(hitItem == null)
             {

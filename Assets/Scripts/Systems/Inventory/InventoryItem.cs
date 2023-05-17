@@ -14,7 +14,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [HideInInspector] public Outline outline;
 
     [Header("Components")]
-    [HideInInspector] public ItemObject item;
+    public ItemObject item;
     [HideInInspector] public int count = 1;
     [HideInInspector] public Transform parentAfterDrag;
 

@@ -80,9 +80,23 @@ public class InventoryManager : MonoBehaviour {
         for (int i = 0; i < inventorySlots.Length; i++) {
             InventorySlot slot = inventorySlots[i];
             InventoryItem itemInSlot = slot.GetComponentInChildren<InventoryItem>();
+            
             if (itemInSlot == null) {
-                SpawnNewItem(item, slot);
-                return true;
+                if (item.type != ItemType.Gun) {
+                    switch (i) {
+                        case 0:
+                            slot = inventorySlots[i + 2];
+                            break;
+                        case 1:
+                            slot = inventorySlots[i + 1];
+                            break;
+                    }
+                    SpawnNewItem(item, slot);
+                    return true;
+                } else {
+                    SpawnNewItem(item, slot);
+                    return true;
+                }
             }
         }
 
@@ -102,7 +116,10 @@ public class InventoryManager : MonoBehaviour {
     }
 
     public ItemObject GetItemByIndex(int i) {
-        return inventorySlots[i].GetComponentInChildren<InventoryItem>().item;
+        if(inventorySlots[i].GetComponentInChildren<InventoryItem>().item) {
+            return inventorySlots[i].GetComponentInChildren<InventoryItem>().item;
+        }
+        return null;
     }
 
     public InventoryItem GetInvItemByIndex(int i) {

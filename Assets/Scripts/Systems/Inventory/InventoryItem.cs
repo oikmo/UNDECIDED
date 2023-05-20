@@ -9,9 +9,9 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
 
     [Header("UI")]
-    [HideInInspector] public Image image;
+    public Image image;
     public TMP_Text textCount;
-    [HideInInspector] public Outline outline;
+    public Outline outline;
 
     [Header("Components")]
     public ItemObject item;
@@ -36,13 +36,15 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (!inventoryManager.isOn()) { print("!"); return; }
         image.raycastTarget = false;
         parentAfterDrag = transform.parent;
-        transform.SetParent(transform.root);
+        transform.SetParent(GameHandler.Instance.canvas.transform);
     }
 
     public void OnDrag(PointerEventData eventData) {
         InventoryManager inventoryManager = GameObject.Find("InventoryManager").GetComponent<InventoryManager>();
         if (!inventoryManager.isOn()) { print("!"); return; }
         transform.position = Input.mousePosition;
+        HoverUI.tempItem = null;
+        HoverUI.isFollow = false;
     }
 
     public void OnEndDrag(PointerEventData eventData) {

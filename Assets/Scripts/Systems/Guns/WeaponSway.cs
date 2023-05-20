@@ -24,9 +24,9 @@ public class WeaponSway : MonoBehaviour
             {
                 if (GameHandler.Instance.oMenu.sens != 0)
                 {
-                    float mouseY = GameHandler.Instance.playerInput.Player.Look.ReadValue<Vector2>().y * sensitivityMultiplier;
+                    float mouseY = GameHandler.Instance.mouseY * sensitivityMultiplier;
                     rotationX = Quaternion.AngleAxis(-mouseY, Vector3.right);
-                    float mouseX = GameHandler.Instance.playerInput.Player.Look.ReadValue<Vector2>().x * sensitivityMultiplier;
+                    float mouseX = GameHandler.Instance.mouseX * sensitivityMultiplier;
                     rotationY = Quaternion.AngleAxis(mouseX, Vector3.up);
                 }
             }
@@ -44,6 +44,9 @@ public class WeaponSway : MonoBehaviour
         }
 
         Quaternion targetRotation = rotationX * rotationY;
-        transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRotation, speed * Time.deltaTime);
+        if(!GameHandler.Instance.paused && !GameHandler.Instance.isInventory) {
+            transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRotation, speed * Time.deltaTime);
+        }
+        
     }
 }

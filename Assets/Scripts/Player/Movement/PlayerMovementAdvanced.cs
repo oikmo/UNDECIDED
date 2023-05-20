@@ -116,6 +116,8 @@ public class PlayerMovementAdvanced : MonoBehaviour {
     Vector2 WASDinput = Vector2.zero;
     bool keepMomentum;
 
+    [SerializeField] WallChecker wChecker;
+
     private void Start() {
         climbingScriptDone = GetComponent<ClimbingDone>();
         rb = GetComponent<Rigidbody>();
@@ -213,7 +215,7 @@ public class PlayerMovementAdvanced : MonoBehaviour {
     private void FixedUpdate() {
         previouslyGrounded = grounded;
         // ground check
-        if (rb.position == rb.position && !grounded) {
+        if (rb.position == rb.position && !grounded && !wChecker.touchingWall) {
             rb.AddForce(moveDirection);
         }
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
@@ -224,6 +226,15 @@ public class PlayerMovementAdvanced : MonoBehaviour {
         Vector3 vel = rb.velocity;
         if ((int)vel.magnitude == 0) {
             rb.velocity = new Vector3(moveDirection.x * desiredMoveSpeed, rb.velocity.y, moveDirection.z * desiredMoveSpeed);
+        }
+        //to prevent player from sticking to walls :)
+        if (wChecker.touchingWall && !grounded && !wallrunning) {
+            moveDirection = Vector3.zero;
+            Vector3 tempVel = rb.velocity;
+            tempVel.x = 0;
+            tempVel.y = rb.velocity.y;
+            tempVel.z = 0;
+            rb.velocity = tempVel;
         }
     }
 
@@ -427,6 +438,7 @@ public class PlayerMovementAdvanced : MonoBehaviour {
         if (climbingScript.exitingWall) return;
         if (climbingScriptDone.exitingWall) return;
         if (restricted) return;
+        
 
         // calculate movement direction
         moveDirection = orientation.forward * GameHandler.Instance.verticalInput + orientation.right * GameHandler.Instance.horizontalInput;
@@ -444,7 +456,7 @@ public class PlayerMovementAdvanced : MonoBehaviour {
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
 
         // in air
-        else if (!grounded)
+        else if (!grounded && !wChecker.touchingWall)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
 
         // turn gravity off while on slope

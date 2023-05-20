@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class InventoryManager : MonoBehaviour {
     public InventorySlot[] inventorySlots;
@@ -43,12 +44,26 @@ public class InventoryManager : MonoBehaviour {
             TransformExtentions.SetLocalY(toolBar.transform, 194.3F);
         }
 
+        if(!isOn()) {
+            for (int i = 0; i < inventorySlots.Length; i++) {
+                InventorySlot slot = inventorySlots[i];
+                InventoryItem itemInSlot = slot.GetComponentInChildren<InventoryItem>();
+                if (itemInSlot != null) {
+                    itemInSlot.outline.enabled = false;
+                }
+            }
+            if(HoverUI.tempItem != null) {
+                HoverUI.tempItem = null;
+                HoverUI.isFollow = false;
+            }
+        }
+        
+
     }
 
     public bool AddItem(ItemObject item) {
         //check for anny slot that isnt max
         for (int i = 0; i < inventorySlots.Length; i++) {
-
             InventorySlot slot = inventorySlots[i];
             InventoryItem itemInSlot = slot.GetComponentInChildren<InventoryItem>();
             if (itemInSlot != null && itemInSlot.item == item && itemInSlot.item.isStackable) {
@@ -75,6 +90,7 @@ public class InventoryManager : MonoBehaviour {
     }
 
     public void SpawnNewItem(ItemObject item, InventorySlot slot) {
+        if (item == null) { print("GOOO"); return; }
         GameObject newItemGo = Instantiate(inventoryItemPrefab, slot.transform);
         InventoryItem invItem = newItemGo.GetComponent<InventoryItem>();
         invItem.InitialiseItem(item);
@@ -94,8 +110,14 @@ public class InventoryManager : MonoBehaviour {
     }
 
     public ItemObject GetSelectedItem() {
-        InventoryItem itemInSlot = inventorySlots[selectedSlot].GetComponentInChildren<InventoryItem>();
-        if (itemInSlot != null) {
+        InventoryItem itemInSlot = null;
+        try {
+            itemInSlot = inventorySlots[selectedSlot].GetComponentInChildren<InventoryItem>();
+        } catch (IndexOutOfRangeException) {
+            return null;
+        }
+        
+        if (itemInSlot != null && !isNotSelected()) {
             ItemObject item = itemInSlot.item;
             return item;
         }
@@ -118,6 +140,14 @@ public class InventoryManager : MonoBehaviour {
         }
 
         return null;
+    }
+
+    public bool isNotSelected() {
+        return !inventorySlots[0].selected && !inventorySlots[1].selected;
+    }
+
+    public bool isOneSelected() {
+        return inventorySlots[0].selected || inventorySlots[1].selected;
     }
 }
  

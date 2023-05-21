@@ -26,6 +26,5 @@ public class GunData : ScriptableObject
     public AudioClip onShot;
     public AudioClip onReload;
 
-    [HideInInspector]
     public bool reloading;
 }

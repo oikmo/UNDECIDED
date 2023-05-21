@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using System.Diagnostics;
 using Kino;
-
+using TMPro;
 ///<summary>
 /// The <c>GameHandler</c> class which handles the entire game
 ///</summary>
@@ -28,6 +28,9 @@ public class GameHandler : MonoBehaviour {
     #endregion
 
     #region player vars
+    public int[] ammoValues;
+    [SerializeField] TMP_Text[] ammoValuesText;
+    public TMP_Text[] gunText;
     public InventoryManager playerInventory;
     public PlayerMovementAdvanced pm;
     public PlayerHealth pHealth;
@@ -81,6 +84,12 @@ public class GameHandler : MonoBehaviour {
         Cursor.lockState = CursorLockMode.Locked;
     }
 
+    public void RefreshValues() {
+        for(int i = 0; i<ammoValuesText.Length; i++) {
+            ammoValuesText[i].text = ammoValues[i].ToString();
+        }
+        
+    }
     private void Update() {
         if (GetComponent<PlayerInput>() != null) {
             curDevice = GetComponent<PlayerInput>().currentControlScheme.ToLower();

@@ -9,7 +9,7 @@ using UnityEditor;
 
 public class PlayerStuff : MonoBehaviour
 {
-    [HideInInspector] public int version = 1;
+    [HideInInspector] public float version = 1.1f;
 
     [Header("Player")]
     public GameObject player;
@@ -65,15 +65,16 @@ public class PlayerStuff : MonoBehaviour
     {
         SaveSystem.setName("save");
         PlayerData data = SaveSystem.LoadPlayer();
-        version = data.version;
-        GameHandler.Instance.pHealth.curhealth = data.health;
-        checkpoint = data.checkpoint;
-        GameHandler.Instance.HECHEATED = data.HECHEATED;
-        
-        GameObject.Find("PauseMenuHolder").GetComponent<PauseMenu>().ResumeGame();
+        if(data.version == version) {
+            version = data.version;
+            GameHandler.Instance.pHealth.curhealth = data.health;
+            checkpoint = data.checkpoint;
+            GameHandler.Instance.HECHEATED = data.HECHEATED;
+            GameHandler.Instance.playerInventory.inventorySlots = data.inventory;
 
-        switch (data.level) 
-            {
+            GameObject.Find("PauseMenuHolder").GetComponent<PauseMenu>().ResumeGame();
+
+            switch (data.level) {
                 case 0:
                     GameObject.Find("LevelLoader").GetComponent<LevelLoader>().LoadLevel("Training");
                     break;
@@ -81,31 +82,30 @@ public class PlayerStuff : MonoBehaviour
                     GameObject.Find("LevelLoader").GetComponent<LevelLoader>().LoadLevel("ch1_p1");
                     break;
             }
-        level = data.level;
+            level = data.level;
 
-        if (level == 0)
-        {
-            switch (checkpoint)
-            {
-                case 0:
-                    transform.position = new Vector3(54, 2.25f, 24);
-                    break;
-                case 1:
-                    transform.position = new Vector3(0, 1, 8);
-                    break;
-                case 2:
-                    transform.position = new Vector3(11, 1, -33);
-                    break;
+            if (level == 0) {
+                switch (checkpoint) {
+                    case 0:
+                        transform.position = new Vector3(54, 2.25f, 24);
+                        break;
+                    case 1:
+                        transform.position = new Vector3(0, 1, 8);
+                        break;
+                    case 2:
+                        transform.position = new Vector3(11, 1, -33);
+                        break;
+                }
             }
+
+            GameObject.Find("PauseMenuHolder").GetComponent<PauseMenu>().ResumeGame();
+
+            if (File.Exists(Application.persistentDataPath + "/save.txt")) {
+                File.WriteAllText(Application.persistentDataPath + "/save.txt", "false");
+            }
+        } else {
+            //make UI that says save file too old
         }
-
-        GameObject.Find("PauseMenuHolder").GetComponent<PauseMenu>().ResumeGame();
-
-        if(File.Exists(Application.persistentDataPath + "/save.txt"))
-        {
-            File.WriteAllText(Application.persistentDataPath + "/save.txt", "false");
-        }
-
     }
 
     private void OnApplicationQuit()

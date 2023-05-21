@@ -7,7 +7,7 @@ public class itemTest : MonoBehaviour {
     public ItemObject[] itemsToPickup;
 
     public void PickUpTime(int id) {
-        bool result = inventoryManager.AddItem(itemsToPickup[id]);
+        bool result = inventoryManager.AddItem(itemsToPickup[id], 1);
         if (!result) {
             print("INV FULL!!!");
         }

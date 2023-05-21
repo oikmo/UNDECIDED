@@ -14,6 +14,9 @@ public class PlayerMovementAdvanced : MonoBehaviour {
     public int normal = 90;
     public float smooth = 5;
 
+    Vector3 boxSize = new Vector3(1, 0.48f, 1);
+    [SerializeField] float distance = 1;
+
     [Header("Movement")]
     public float moveSpeed;
     private float desiredMoveSpeed;
@@ -215,12 +218,8 @@ public class PlayerMovementAdvanced : MonoBehaviour {
     private void FixedUpdate() {
         previouslyGrounded = grounded;
         // ground check
-        if (rb.position == rb.position && !grounded && !wChecker.touchingWall) {
-            rb.AddForce(moveDirection);
-        }
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
+        grounded = isGrounded();
         //Debug.DrawLine(transform.position, Vector3.down, Color.green);
-
         MovePlayer();
 
         Vector3 vel = rb.velocity;
@@ -236,6 +235,11 @@ public class PlayerMovementAdvanced : MonoBehaviour {
             tempVel.z = 0;
             rb.velocity = tempVel;
         }
+    }
+
+    private void OnDrawGizmos() {
+        Gizmos.color = Color.red;
+        Gizmos.DrawCube(transform.position - transform.up * distance, boxSize);
     }
 
     private void MyInput() {
@@ -269,9 +273,6 @@ public class PlayerMovementAdvanced : MonoBehaviour {
                     // start crouch
                     if (GameHandler.Instance.crouching && state != MovementState.sprinting && grounded) {
                         transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
-                        //rb.AddRelativeForce(Vector3.down * 5f, ForceMode.VelocityChange);
-                        //rb.AddRelativeForce(Vector3.down * 0.5f, ForceMode.VelocityChange);
-
                         crouching = true;
                     } else {
                         transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
@@ -512,7 +513,8 @@ public class PlayerMovementAdvanced : MonoBehaviour {
     }
 
     public bool OnSlope() {
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f)) {
+        
+        if (Physics.BoxCast(transform.position, boxSize, -transform.up, out slopeHit, Quaternion.identity, playerHeight * 0.5f + 0.3f)) {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle < maxSlopeAngle && angle != 0;
         }
@@ -547,5 +549,15 @@ public class PlayerMovementAdvanced : MonoBehaviour {
 
     public Vector3 GetRBVelocity() {
         return rb.velocity;
+    }
+
+    private bool isGrounded() {
+        distance = playerHeight * 0.5f + 0.1f;
+
+        if (Physics.BoxCast(transform.position, boxSize, -transform.up, Quaternion.identity, distance, whatIsGround)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

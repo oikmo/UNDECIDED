@@ -4,5 +4,6 @@ using UnityEngine;
 
 public class RealItem : MonoBehaviour
 {
+    public int count;
     public ItemObject item;
 }

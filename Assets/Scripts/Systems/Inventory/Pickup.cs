@@ -33,6 +33,7 @@ public class Pickup : MonoBehaviour
     private Dialogue dialogueInteract;
     private CutsceneStart cutsceneStart;
     private float currentPickupTimerElapsed;
+    bool lockPickup = false;
 
     // Update is called once per frame
     void Update()
@@ -136,10 +137,13 @@ public class Pickup : MonoBehaviour
     private void IncrementPickupProgressAndTryCompleteItem()
     {
         currentPickupTimerElapsed += Time.deltaTime;
-        if(currentPickupTimerElapsed >= pickupTime)
+        if(currentPickupTimerElapsed >= pickupTime && !lockPickup)
         {
+            lockPickup = true;
             //add item to inv e.g Inventory.addItem()
-            GameHandler.Instance.playerInventory.AddItem(itemBeingPickedUp.item);
+            GameHandler.Instance.playerInventory.AddItem(itemBeingPickedUp.item, itemBeingPickedUp.count);
+            Cicero.Instance.DisplayText("You have picked up : ");
+
             Destroy(itemBeingPickedUp.gameObject);
         }
     }
@@ -183,6 +187,7 @@ public class Pickup : MonoBehaviour
             }
             else if (hitItem != null && hitItem != itemBeingPickedUp)
             {
+                lockPickup = false;
                 itemBeingPickedUp = hitItem;
             }
         }

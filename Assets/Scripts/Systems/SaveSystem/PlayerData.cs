@@ -5,12 +5,13 @@ using UnityEngine;
 [System.Serializable]
 public class PlayerData
 {
-    public int version;
+    public float version;
     public int checkpoint;
     public int level;
     public int health;
     public float moveSpeed;
     public bool HECHEATED;
+    public InventorySlot[] inventory;
 
     public PlayerData()
     {
@@ -23,7 +24,8 @@ public class PlayerData
                 health = (int)GameHandler.Instance.pHealth.curhealth; 
                 checkpoint = pStuff.checkpoint;
                 HECHEATED = GameHandler.Instance.HECHEATED;
-                version = pStuff.version; 
+                version = pStuff.version;
+                inventory = GameHandler.Instance.playerInventory.inventorySlots;
             }
         } 
     }

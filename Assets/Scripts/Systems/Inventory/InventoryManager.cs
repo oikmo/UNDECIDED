@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using TMPro;
 
 public class InventoryManager : MonoBehaviour {
     public InventorySlot[] inventorySlots;
     public GameObject inventoryItemPrefab;
     public GameObject mainInv;
     public GameObject toolBar;
+    TMP_Text[] ammoValues;
 
     int selectedSlot = -1;
     void ChangeSelectedSlot(int newValue) {
@@ -57,47 +59,91 @@ public class InventoryManager : MonoBehaviour {
                 HoverUI.isFollow = false;
             }
         }
-        
 
-    }
-
-    public bool AddItem(ItemObject item) {
-        //check for anny slot that isnt max
         for (int i = 0; i < inventorySlots.Length; i++) {
             InventorySlot slot = inventorySlots[i];
             InventoryItem itemInSlot = slot.GetComponentInChildren<InventoryItem>();
-            if (itemInSlot != null && itemInSlot.item == item && itemInSlot.item.isStackable) {
-                if (itemInSlot.count < itemInSlot.item.maxStackSize) {
-                    itemInSlot.count++;
-                    itemInSlot.RefreshCount();
-                    return true;
+            if (itemInSlot != null) {
+                if (itemInSlot.count == 0) {
+                    print("setting null!");
+                    itemInSlot = null;
                 }
 
 
             }
         }
-        //check for empty slot
-        for (int i = 0; i < inventorySlots.Length; i++) {
-            InventorySlot slot = inventorySlots[i];
-            InventoryItem itemInSlot = slot.GetComponentInChildren<InventoryItem>();
+    }
+
+    AmmoObject GetType(ItemObject item) {
+        object temp = item;
+        AmmoObject ammo = (AmmoObject)temp;
+        return ammo;
+    }
+
+    public bool AddItem(ItemObject item, int numbers) {
+        int tempNumbers = numbers + 1;
+        if(item.type == ItemType.Ammo) {
+            AmmoObject ammoItem = GetType(item);
+            switch(ammoItem.ammoType) {
+                case GunType.Pistol:
+                    GameHandler.Instance.ammoValues[0] += numbers;
+                    GameHandler.Instance.RefreshValues();
+                    return true;
+            }
             
-            if (itemInSlot == null) {
-                if (item.type != ItemType.Gun) {
-                    switch (i) {
-                        case 0:
-                            slot = inventorySlots[i + 2];
-                            break;
-                        case 1:
-                            slot = inventorySlots[i + 1];
-                            break;
+
+        } else {
+            //check for any slot that isnt max
+            for (int i = 0; i < inventorySlots.Length; i++) {
+                InventorySlot slot = inventorySlots[i];
+                InventoryItem itemInSlot = slot.GetComponentInChildren<InventoryItem>();
+                if (itemInSlot != null && itemInSlot.item == item && itemInSlot.item.isStackable) {
+                    if (itemInSlot.count < itemInSlot.item.maxStackSize) {
+                        if(itemInSlot.count + numbers < itemInSlot.item.maxStackSize) {
+                            itemInSlot.count += numbers;
+                            tempNumbers = 1;
+                        } else {
+                            tempNumbers -= itemInSlot.item.maxStackSize - itemInSlot.count;
+                            itemInSlot.count = itemInSlot.item.maxStackSize;
+
+                        }
+                        
+                        itemInSlot.RefreshCount();
+                        return true;
                     }
-                    SpawnNewItem(item, slot);
-                    return true;
-                } else {
-                    SpawnNewItem(item, slot);
-                    return true;
+
+
                 }
             }
+            //check for empty slot
+            for (int i = 0; i < inventorySlots.Length; i++) {
+                InventorySlot slot = inventorySlots[i];
+                InventoryItem itemInSlot = slot.GetComponentInChildren<InventoryItem>();
+
+                if (itemInSlot == null) {
+                    if (item.type != ItemType.Gun) {
+                        switch (i) {
+                            case 0:
+                                slot = inventorySlots[i + 2];
+                                break;
+                            case 1:
+                                slot = inventorySlots[i + 1];
+                                break;
+                        }
+                        SpawnNewItem(item, slot);
+                        return true;
+                    } else {
+                        if(tempNumbers > 1) {
+                            SpawnNewItem(item, slot, tempNumbers);
+                        } else if(tempNumbers > 0 && tempNumbers == 1) {
+                            SpawnNewItem(item, slot);
+                        }
+                        
+                        return true;
+                    }
+                }
+            }
+
         }
 
         return false;
@@ -109,6 +155,14 @@ public class InventoryManager : MonoBehaviour {
         InventoryItem invItem = newItemGo.GetComponent<InventoryItem>();
         invItem.InitialiseItem(item);
     }
+
+    public void SpawnNewItem(ItemObject item, InventorySlot slot, int count) {
+        if (item == null) { print("GOOO"); return; }
+        GameObject newItemGo = Instantiate(inventoryItemPrefab, slot.transform);
+        InventoryItem invItem = newItemGo.GetComponent<InventoryItem>();
+        invItem.InitialiseItem(item);
+        invItem.count = count;
+    }
     public bool isOn() => mainInv.activeSelf;
 
     Vector2 toolBarPos() {
@@ -116,10 +170,17 @@ public class InventoryManager : MonoBehaviour {
     }
 
     public ItemObject GetItemByIndex(int i) {
-        if(inventorySlots[i].GetComponentInChildren<InventoryItem>().item) {
-            return inventorySlots[i].GetComponentInChildren<InventoryItem>().item;
+        ItemObject item = null;
+        print(i);
+        try {
+            if (inventorySlots[i].GetComponentInChildren<InventoryItem>().item != null) {
+                item = inventorySlots[i].GetComponentInChildren<InventoryItem>().item;
+            }
+        } catch(NullReferenceException) {
+            return item;
         }
-        return null;
+
+        return item;
     }
 
     public InventoryItem GetInvItemByIndex(int i) {

@@ -21,14 +21,12 @@ public class Gun : MonoBehaviour {
 
     private void onDisable() => gunData.reloading = false;
 
-    private bool CanShoot() => !gunData.reloading && timeSinceLastShot > 1f / (gunData.fireRate / 60f) && !GameHandler.Instance.paused;
+    private bool CanShoot() => !gunData.reloading && timeSinceLastShot > 1f / (gunData.fireRate / 60f) && !GameHandler.Instance.paused && gunModel.activeSelf;
 
     private void Shoot() {
         //print("ran! " + (gunData.curAmmoSize > 0 && gunModel.activeSelf) + " " + gunData.curAmmoSize + " " + gunModel.activeSelf);
-        if (gunData.curAmmoSize > 0 && gunModel.activeSelf) {
-            print("ran2!");
+        if (gunData.curAmmoSize > 0) {
             if (CanShoot()) {
-                print("ran3!");
                 if (Physics.Raycast(cam.position, cam.forward, out RaycastHit hitInfo, gunData.range)) {
                     IDamagable damageable = hitInfo.transform.GetComponent<IDamagable>();
                     damageable?.Damage(gunData.damage);
@@ -38,6 +36,8 @@ public class Gun : MonoBehaviour {
                 timeSinceLastShot = 0;
                 OnGunShot();
             }
+        } else {
+            StartReload();
         }
     }
 
@@ -47,39 +47,30 @@ public class Gun : MonoBehaviour {
     }
 
     private IEnumerator Reload() {
-        InventoryItem ammoItem = null;
-        AmmoObject ammo = null;
         gunData.reloading = true;
+        PlaySound(2, gunData.onReload);
         yield return new WaitForSeconds(gunData.reloadTime);
+        
 
-        print("run!");
-        for (int thatI = 0; thatI < GameHandler.Instance.playerInventory.inventorySlots.Length - 2; thatI++) {
-            int i = thatI + 2;
-            //if (GameHandler.Instance.playerInventory.Container.Any(p => p.ID == GameHandler.Instance.refAmmoSlot[i].ID && p.item == GameHandler.Instance.refAmmoSlot[i].item))
-            //print(GameHandler.Instance.playerInventory.GetItemByIndex(i));
-            if (GameHandler.Instance.playerInventory.GetItemByIndex(i) != null) {
-                if (GameHandler.Instance.playerInventory.GetItemByIndex(i).type == ItemType.Ammo) {
-                    ammoItem = GameHandler.Instance.playerInventory.GetInvItemByIndex(i);
+        if (gunData.curAmmoSize == 0) { requiredAmmo = gunData.ammoSize; } else { requiredAmmo = Math.Abs(gunData.curAmmoSize - gunData.ammoSize); }
 
-                    if (GetType(ammoItem.item).ammoType == gunData.item.gunType) {
-                        ammo = GetType(ammoItem.item);
-                    }
-                }
-            } else {
-                print("didnt have any ammo?");
-            }
-        }
-
-        if (ammoItem != null) {
-            if (gunData.curAmmoSize == 0) { requiredAmmo = gunData.ammoSize; } else { requiredAmmo = gunData.curAmmoSize - gunData.ammoSize; }
-
-            if (!(ammoItem.count - requiredAmmo < 0)) {
-                PlaySound(2, gunData.onReload);
-                ammoItem.count -= requiredAmmo;
+        if(gunData.item.gunType == GunType.Pistol && GameHandler.Instance.ammoValues[0] != 0) {
+            //print((GameHandler.Instance.ammoValues[0] < requiredAmmo) + " " + GameHandler.Instance.ammoValues[0] + " " + requiredAmmo);
+            if (GameHandler.Instance.ammoValues[0] == requiredAmmo) {
+                GameHandler.Instance.ammoValues[0] = 0;
+                gunData.curAmmoSize += requiredAmmo;
+            } else if(GameHandler.Instance.ammoValues[0] < requiredAmmo) {
+                gunData.curAmmoSize = GameHandler.Instance.ammoValues[0];
+                GameHandler.Instance.ammoValues[0] = 0;
+                
+            } else if(!(GameHandler.Instance.ammoValues[0] - requiredAmmo <= 0)) {
+                GameHandler.Instance.ammoValues[0] -= requiredAmmo;
                 gunData.curAmmoSize += requiredAmmo;
             }
-        }
 
+            
+        }
+        GameHandler.Instance.RefreshValues();
         gunData.reloading = false;
     }
 
@@ -89,18 +80,11 @@ public class Gun : MonoBehaviour {
         speaker[i].Play();
     }
 
-    AmmoObject GetType(ItemObject item) {
-        object temp = item;
-        AmmoObject ammo = (AmmoObject)temp;
-        return ammo;
-    }
-
     public void Update() {
         timeSinceLastShot += Time.deltaTime;
     }
 
     private void OnGunShot() {
-        print("hii");
         PlaySound(3, gunData.onShot);
     }
 

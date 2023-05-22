@@ -109,6 +109,7 @@ public class PlayerMovementAdvanced : MonoBehaviour {
 
     [HideInInspector]
     public bool previouslyGrounded;
+    bool groundCheck = true;
 
     [SerializeField] TextMeshProUGUI text_speed;
     [SerializeField] TextMeshProUGUI text_mode;
@@ -120,6 +121,7 @@ public class PlayerMovementAdvanced : MonoBehaviour {
     bool keepMomentum;
 
     [SerializeField] WallChecker wChecker;
+    [SerializeField] Transform groundChecker;
 
     private void Start() {
         climbingScriptDone = GetComponent<ClimbingDone>();
@@ -218,8 +220,10 @@ public class PlayerMovementAdvanced : MonoBehaviour {
     private void FixedUpdate() {
         previouslyGrounded = grounded;
         // ground check
-        grounded = isGrounded();
+        //grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
         //Debug.DrawLine(transform.position, Vector3.down, Color.green);
+
+        grounded = Physics.CheckSphere(groundChecker.position, 0.1f, whatIsGround);
         MovePlayer();
 
         Vector3 vel = rb.velocity;
@@ -239,7 +243,8 @@ public class PlayerMovementAdvanced : MonoBehaviour {
 
     private void OnDrawGizmos() {
         Gizmos.color = Color.red;
-        Gizmos.DrawCube(transform.position - transform.up * distance, boxSize);
+        Gizmos.DrawSphere(groundChecker.position, 0.5f);
+        //Physics.CheckSphere(groundChecker.position, 0.1f, whatIsGround)
     }
 
     private void MyInput() {
@@ -272,11 +277,19 @@ public class PlayerMovementAdvanced : MonoBehaviour {
 
                     // start crouch
                     if (GameHandler.Instance.crouching && state != MovementState.sprinting && grounded) {
+                        groundCheck = false;
+                        
                         transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+                        rb.AddForce(Vector3.down * 20f, ForceMode.Impulse);
+                        playerHeight = 0.5f;
                         crouching = true;
+                        grounded = true;
                     } else {
                         transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+                        //rb.AddForce(Vector3.down * 20f, ForceMode.Impulse);
+                        playerHeight = startYScale;
                         crouching = false;
+                        groundCheck = true;
                     }
                 }
 
@@ -514,7 +527,7 @@ public class PlayerMovementAdvanced : MonoBehaviour {
 
     public bool OnSlope() {
         
-        if (Physics.BoxCast(transform.position, boxSize, -transform.up, out slopeHit, Quaternion.identity, playerHeight * 0.5f + 0.3f)) {
+        if (Physics.Raycast(transform.position, -transform.up, playerHeight * 0.5f + 0.3f)) {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle < maxSlopeAngle && angle != 0;
         }
@@ -552,12 +565,25 @@ public class PlayerMovementAdvanced : MonoBehaviour {
     }
 
     private bool isGrounded() {
-        distance = playerHeight * 0.5f + 0.1f;
+        distance = playerHeight; //* 0.5f + 0.1f;
 
-        if (Physics.BoxCast(transform.position, boxSize, -transform.up, Quaternion.identity, distance, whatIsGround)) {
+        
+        if (Physics.BoxCast(transform.position, boxSize, Vector3.down , Quaternion.identity, distance, whatIsGround)) {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public void OnCollisionEnter(Collision collision) {
+        if(groundCheck) {
+            grounded = true;
+        }
+    }
+
+    public void OnCollisionExit(Collision collision) {
+        if (groundCheck) {
+            grounded = false;
         }
     }
 }

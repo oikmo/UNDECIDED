@@ -107,9 +107,11 @@ public class PlayerMovementAdvanced : MonoBehaviour {
     public bool freeze;
     public bool restricted;
 
+    Vector3 offsetHeight = Vector3.zero;
+    Vector3 spherePos = Vector3.zero;
+
     [HideInInspector]
     public bool previouslyGrounded;
-    bool groundCheck = true;
 
     [SerializeField] TextMeshProUGUI text_speed;
     [SerializeField] TextMeshProUGUI text_mode;
@@ -121,12 +123,13 @@ public class PlayerMovementAdvanced : MonoBehaviour {
     bool keepMomentum;
 
     [SerializeField] WallChecker wChecker;
-    [SerializeField] Transform groundChecker;
+    [SerializeField] GroundChecker gChecker; //quick hack to fix grounded issue :)
 
     private void Start() {
         climbingScriptDone = GetComponent<ClimbingDone>();
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+        //charControl = GetComponent<CharacterController>();
 
         readyToJump = true;
 
@@ -147,7 +150,7 @@ public class PlayerMovementAdvanced : MonoBehaviour {
                 }
 
             }
-            if (pCam == null) {
+        if (pCam == null) {
                 pCam = GameObject.Find("PlayerCam").GetComponent<PlayerCam>();
             }
 
@@ -219,11 +222,11 @@ public class PlayerMovementAdvanced : MonoBehaviour {
 
     private void FixedUpdate() {
         previouslyGrounded = grounded;
-        // ground check
-        //grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
-        //Debug.DrawLine(transform.position, Vector3.down, Color.green);
+        //grounded = charControl.isGrounded;
 
-        grounded = Physics.CheckSphere(groundChecker.position, 0.1f, whatIsGround);
+        offsetHeight = new Vector3(0.0f, .1f + playerHeight / 2, 0.0f);
+        spherePos = transform.position - offsetHeight;
+        grounded = gChecker.grounded;
         MovePlayer();
 
         Vector3 vel = rb.velocity;
@@ -243,8 +246,7 @@ public class PlayerMovementAdvanced : MonoBehaviour {
 
     private void OnDrawGizmos() {
         Gizmos.color = Color.red;
-        Gizmos.DrawSphere(groundChecker.position, 0.5f);
-        //Physics.CheckSphere(groundChecker.position, 0.1f, whatIsGround)
+        Gizmos.DrawSphere(spherePos, 1f);
     }
 
     private void MyInput() {
@@ -277,19 +279,14 @@ public class PlayerMovementAdvanced : MonoBehaviour {
 
                     // start crouch
                     if (GameHandler.Instance.crouching && state != MovementState.sprinting && grounded) {
-                        groundCheck = false;
-                        
                         transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
-                        rb.AddForce(Vector3.down * 20f, ForceMode.Impulse);
+                        //rb.AddForce(Vector3.down * 20f, ForceMode.Impulse);
                         playerHeight = 0.5f;
                         crouching = true;
-                        grounded = true;
                     } else {
                         transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
-                        //rb.AddForce(Vector3.down * 20f, ForceMode.Impulse);
                         playerHeight = startYScale;
                         crouching = false;
-                        groundCheck = true;
                     }
                 }
 
@@ -562,28 +559,5 @@ public class PlayerMovementAdvanced : MonoBehaviour {
 
     public Vector3 GetRBVelocity() {
         return rb.velocity;
-    }
-
-    private bool isGrounded() {
-        distance = playerHeight; //* 0.5f + 0.1f;
-
-        
-        if (Physics.BoxCast(transform.position, boxSize, Vector3.down , Quaternion.identity, distance, whatIsGround)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public void OnCollisionEnter(Collision collision) {
-        if(groundCheck) {
-            grounded = true;
-        }
-    }
-
-    public void OnCollisionExit(Collision collision) {
-        if (groundCheck) {
-            grounded = false;
-        }
     }
 }

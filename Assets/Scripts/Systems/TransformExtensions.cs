@@ -26,4 +26,28 @@ public static class TransformExtentions
     {
         transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, z);
     }
+
+    public static void ChangeX(this Transform transform, float x) {
+        transform.position = new Vector3(
+            transform.position.x + x,
+            transform.position.y,
+            transform.position.z
+        );
+    }
+
+    public static void ChangeY(this Transform transform, float y) {
+        transform.position = new Vector3(
+            transform.position.x,
+            transform.position.y + y,
+            transform.position.z
+        );
+    }
+
+    public static void ChangeZ(this Transform transform, float z) {
+        transform.position = new Vector3(
+            transform.position.x,
+            transform.position.y,
+            transform.position.z + z
+        );
+    }
 }

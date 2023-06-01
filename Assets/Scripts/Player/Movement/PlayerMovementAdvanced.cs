@@ -243,12 +243,6 @@ public class PlayerMovementAdvanced : MonoBehaviour {
             rb.velocity = tempVel;
         }
     }
-
-    private void OnDrawGizmos() {
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(spherePos, 1f);
-    }
-
     private void MyInput() {
         if (GameHandler.Instance != null) {
             if (!GameHandler.Instance.paused) {
@@ -282,11 +276,16 @@ public class PlayerMovementAdvanced : MonoBehaviour {
                         transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
                         //rb.AddForce(Vector3.down * 20f, ForceMode.Impulse);
                         playerHeight = 0.5f;
+                        transform.position += Vector3.down * 0.6f;
                         crouching = true;
                     } else {
                         transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
                         playerHeight = startYScale;
+                        if(crouching) {
+                            transform.position += Vector3.up * 0.6f;
+                        }
                         crouching = false;
+                        
                     }
                 }
 

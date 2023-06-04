@@ -284,8 +284,7 @@ public class PlayerMovementAdvanced : MonoBehaviour {
                         transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
                         playerHeight = startYScale;
                         if(crouching) {
-                            
-                            print("difference : " + difference);
+                            //print("difference : " + difference);
                             transform.position += Vector3.up * difference;
                             //transform.position += Vector3.up * 0.5f;
                         }
@@ -293,9 +292,6 @@ public class PlayerMovementAdvanced : MonoBehaviour {
                         
                     }
                 }
-
-
-
                 //groundslam
                 /*if (!grounded && (Input.GetButtonDown("Crouch")) && state != MovementState.crouching && state == MovementState.air)
                 {
@@ -423,7 +419,7 @@ public class PlayerMovementAdvanced : MonoBehaviour {
         lastDesiredMoveSpeed = desiredMoveSpeed;
 
         // deactivate keepMomentum
-        //if (Mathf.Abs(desiredMoveSpeed - moveSpeed) < 0.1f) keepMomentum = false;
+        if (Mathf.Abs(desiredMoveSpeed - moveSpeed) < 0.1f) keepMomentum = false;
     }
 
     private IEnumerator SmoothlyLerpMoveSpeed() {
@@ -458,9 +454,21 @@ public class PlayerMovementAdvanced : MonoBehaviour {
         // calculate movement direction
         moveDirection = orientation.forward * GameHandler.Instance.verticalInput + orientation.right * GameHandler.Instance.horizontalInput;
 
+        print(OnSlope() + " " + exitingSlope);
+
         // on slope
         if (OnSlope() && !exitingSlope) {
-            rb.AddForce(GetSlopeMoveDirection(moveDirection) * moveSpeed * 20f, ForceMode.Force);
+            print(moveDirection.x);
+
+            if(moveDirection.x > 0) {
+                print("horayy!");
+                rb.AddForce(GetSlopeMoveDirection(moveDirection) * desiredMoveSpeed * 20f, ForceMode.Force);
+            } else {
+                rb.AddForce(GetSlopeMoveDirection(moveDirection) * moveSpeed * 20f, ForceMode.Force);
+            }
+            
+
+            
 
             if (rb.velocity.y > 0)
                 rb.AddForce(Vector3.down * 80f, ForceMode.Force);

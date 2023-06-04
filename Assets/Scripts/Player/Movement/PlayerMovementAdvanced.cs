@@ -270,19 +270,24 @@ public class PlayerMovementAdvanced : MonoBehaviour {
 
                         Invoke(nameof(ResetJump), jumpCooldown);
                     }
-
+                    float difference = Math.Abs((transform.localScale.y - 2f) / 2f);
                     // start crouch
-                    if (GameHandler.Instance.crouching && state != MovementState.sprinting && grounded) {
+                    if (GameHandler.Instance.crouching && state != MovementState.sprinting) {
                         transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
                         //rb.AddForce(Vector3.down * 20f, ForceMode.Impulse);
                         playerHeight = 0.5f;
-                        transform.position += Vector3.down * 0.6f;
+                        
+                        //transform.position += Vector3.down * difference;
+                        //transform.position += Vector3.down * 0.5f;
                         crouching = true;
                     } else {
                         transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
                         playerHeight = startYScale;
                         if(crouching) {
-                            transform.position += Vector3.up * 0.6f;
+                            
+                            print("difference : " + difference);
+                            transform.position += Vector3.up * difference;
+                            //transform.position += Vector3.up * 0.5f;
                         }
                         crouching = false;
                         
@@ -488,17 +493,7 @@ public class PlayerMovementAdvanced : MonoBehaviour {
             // limit velocity if needed
             if ((state != MovementState.air || grounded) && flatVel.magnitude > moveSpeed) {
                 Vector3 limitedVel = flatVel.normalized * moveSpeed;
-                tempVel.y = rb.velocity.y;
-                tempVel.x = Mathf.Clamp(rb.velocity.x, -moveSpeed, moveSpeed);
-                tempVel.y = rb.velocity.y;
-                tempVel.z = Mathf.Clamp(rb.velocity.z, -moveSpeed, moveSpeed);
-                tempVel.y = rb.velocity.y;
-                rb.velocity = tempVel;
-                tempVel.y = rb.velocity.y;
                 rb.AddForce(-new Vector3(limitedVel.x, -rb.velocity.y, limitedVel.z));
-                tempVel.y = rb.velocity.y;
-                rb.velocity = tempVel;
-
             }
         }
     }

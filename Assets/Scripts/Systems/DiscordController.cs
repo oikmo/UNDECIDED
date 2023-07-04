@@ -1,18 +1,13 @@
-using System.Diagnostics;
-using System.ComponentModel;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-#if UNITY_EDITOR
 using Discord;
-#endif
+using UnityEngine;
+using System;
+using System.Diagnostics;
 
 public class DiscordController : MonoBehaviour
 {
     public string Details;
     public string State;
     public string Image;
-	#if UNITY_EDITOR
     public Discord.Discord discord;
 	
 	void Start()
@@ -23,6 +18,13 @@ public class DiscordController : MonoBehaviour
 			if (Process.GetProcessesByName("discord") != null)
 			{
 				discord = new Discord.Discord(972224735180103810, (System.Int32)CreateFlags.Default);
+				var audioManager = discord.GetVoiceManager();
+				var voice = new Discord.Presence {
+                    
+
+
+                };
+
 				var activityManager = discord.GetActivityManager();
 				var activity = new Discord.Activity
 				{
@@ -86,5 +88,4 @@ public class DiscordController : MonoBehaviour
 			var activityManager = discord.GetActivityManager();
 		}
     }
-	#endif
 }

@@ -30,17 +30,16 @@ public class Sliding : MonoBehaviour
     {
         if(GameHandler.Instance != null)
         {
-            if (GameHandler.Instance.crouching && pm.sprinting && pm.grounded && !slideLock)
+            if (GameHandler.Instance.sliding && !slideLock)
                 StartSlide();
 
-            if (!GameHandler.Instance.crouching && pm.sliding || !pm.grounded || !pm.definitelyNotIdle())
+            if (!GameHandler.Instance.sliding && pm.sliding || !pm.definitelyNotIdle())
                 StopSlide();
         }
         
     }
 
-    private void FixedUpdate()
-    {
+    private void FixedUpdate() {
         if (pm.sliding)
             SlidingMovement();
     }
@@ -51,52 +50,36 @@ public class Sliding : MonoBehaviour
         //if (!pm.doublejump) return;
 
         pm.sliding = true;
-        if(playerObj.localScale.y != slideYScale)
-        {
-            playerObj.localScale = new Vector3(playerObj.localScale.x, slideYScale, playerObj.localScale.z);
-        }
 
+        playerObj.localScale = new Vector3(playerObj.localScale.x, slideYScale, playerObj.localScale.z);
         pm.rb.velocity = new Vector3(pm.rb.velocity.x, -2, pm.rb.velocity.z);
+        if(pm.playerHeight != 0.5f) {
+            inputDirection = playerObj.forward;
+        }
+        pm.playerHeight = 0.5f;
+       
     }
 
     private void SlidingMovement()
     {
-
         pm.rb.velocity = new Vector3(pm.rb.velocity.x, -2, pm.rb.velocity.z);
 
-        if (GameHandler.Instance != null)
-        {
-            inputDirection = orientation.forward * GameHandler.Instance.verticalInput + orientation.right * GameHandler.Instance.horizontalInput;
-        }
-        
-        slideForce -= 10f * Time.deltaTime;
-
         // sliding normal
-        if (!pm.OnSlope() || pm.rb.velocity.y > -0.1f)
-        {
-            
-            pm.rb.AddForce((inputDirection.normalized  * -2f) * slideForce, ForceMode.Force);
+        if (!pm.OnSlope() || pm.rb.velocity.y > -0.1f) {
+            pm.rb.AddForce(inputDirection.normalized * slideForce, ForceMode.Force);
         }
+
         // sliding down a slope
-        else
-        {
-            //inputDirection = inputDirection * 0.95f * Time.deltaTime;
-            pm.rb.AddForce(pm.GetSlopeMoveDirection((inputDirection) * -2f) * slideForce, ForceMode.Force);
+        else {
+            pm.rb.AddForce(pm.GetSlopeMoveDirection(inputDirection) * slideForce, ForceMode.Force);
         }
-
-        //print(float.Parse((inputDirection.normalized.x * slideForceLimit).ToString("0")) + float.Parse((inputDirection.normalized.z * slideForceLimit).ToString("0")));
-
-        if(slideForce <= -50f)
-            StopSlide();
     }
 
     private void StopSlide()
     {
         pm.sliding = false;
-        
-        playerObj.localScale = new Vector3(playerObj.localScale.x, startYScale, playerObj.localScale.z);
 
-        slideForce = 0;
-        
+        playerObj.localScale = new Vector3(playerObj.localScale.x, startYScale, playerObj.localScale.z);
+        pm.playerHeight = 2f;
     }
 }

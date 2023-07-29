@@ -36,7 +36,7 @@ public class GameHandler : MonoBehaviour {
     public PlayerHealth pHealth;
     public PlayerStuff pStuff;
     public GameObject dialogue, cursor, canvas;
-    public CanvasGroup vHealth, vStamina;
+    public CanvasGroup vHealth;
     public PlayerInputController playerInput;
     public AudioSource death;
     #endregion
@@ -49,8 +49,8 @@ public class GameHandler : MonoBehaviour {
     #region input vars
     public string curDevice;
     public float horizontalInput, verticalInput;
-    public bool sprinting, crouching, jumping, g_left, g_right, equipping, firing, reloading, pausing, interacting;
-    InputAction.CallbackContext move, look, sprint, crouch, jump, g_left_ctx, g_right_ctx, equip, fire, reload, pause, interact, inventory;
+    public bool sprinting, crouching, jumping, g_left, g_right, equipping, firing, reloading, pausing, interacting, sliding;
+    InputAction.CallbackContext move, look, sprint, crouch, jump, g_left_ctx, g_right_ctx, equip, fire, reload, pause, interact, slide;
     #endregion
 
     #region camera vars
@@ -111,6 +111,8 @@ public class GameHandler : MonoBehaviour {
             if (reloading != reload.ReadValue<float>() > 0.1f) { reloading = reload.ReadValue<float>() > 0.1f; }
             pausing = pause.ReadValue<float>() > 0.7f;
             if (interacting != interact.ReadValue<float>() > 0.1f) { interacting = interact.ReadValue<float>() > 0.1f; }
+            if (sliding != slide.ReadValue<float>() > 0.1f) { sliding = slide.ReadValue<float>() > 0.1f; }
+
         } else if (paused || cutscene) {
             if (horizontalInput != 0) { horizontalInput = 0; }
             if (verticalInput != 0) { verticalInput = 0; }
@@ -126,7 +128,7 @@ public class GameHandler : MonoBehaviour {
                 equipping = false;
                 firing = false;
                 reloading = false;
-                //pausing = false;
+                sliding = false;
                 interacting = false;
             }
 
@@ -156,7 +158,6 @@ public class GameHandler : MonoBehaviour {
         if (cam == null) { cam = GameObject.Find("PlayerCam").GetComponent<Camera>(); aGlitch = cam.gameObject.GetComponent<AnalogGlitch>(); dGlitch = cam.gameObject.GetComponent<DigitalGlitch>(); }
 
         if (vHealth == null) { vHealth = GameObject.Find("HealthVignette").GetComponent<CanvasGroup>(); }
-        if (vStamina == null) { vStamina = GameObject.Find("StaminaVignette").GetComponent<CanvasGroup>(); }
 
         if (pm == null) { pm = GameObject.Find("Player").GetComponent<PlayerMovementAdvanced>(); }
         if (pHealth == null) { pHealth = GameObject.Find("Player").GetComponent<PlayerHealth>(); }
@@ -368,9 +369,9 @@ public class GameHandler : MonoBehaviour {
         pause = ctx;
     }
 
-    public void Inventory(InputAction.CallbackContext ctx) {
+    public void Slide(InputAction.CallbackContext ctx) {
         if (!ctx.performed) { return; }
-        inventory = ctx;
+        slide = ctx;
     }
     #endregion
 

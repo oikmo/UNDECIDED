@@ -54,7 +54,7 @@ public class WallRunningAdvanced : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (pm.wallrunning && pm.stamina != 0 && !pm.staminaLock)
+        if (pm.wallrunning)
             WallRunningMovement();
     }
 

@@ -170,6 +170,15 @@ public partial class @PlayerInputController : IInputActionCollection2, IDisposab
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Slide"",
+                    ""type"": ""Button"",
+                    ""id"": ""455b5ee2-7ae1-44a8-aa00-ef09972b6e2b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -654,6 +663,17 @@ public partial class @PlayerInputController : IInputActionCollection2, IDisposab
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""M_Right"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""91b615ea-11bf-4c46-bd5e-4e303f48e88c"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Slide"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1257,6 +1277,7 @@ public partial class @PlayerInputController : IInputActionCollection2, IDisposab
         m_Player_Inventory = m_Player.FindAction("Inventory", throwIfNotFound: true);
         m_Player_M_Left = m_Player.FindAction("M_Left", throwIfNotFound: true);
         m_Player_M_Right = m_Player.FindAction("M_Right", throwIfNotFound: true);
+        m_Player_Slide = m_Player.FindAction("Slide", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1344,6 +1365,7 @@ public partial class @PlayerInputController : IInputActionCollection2, IDisposab
     private readonly InputAction m_Player_Inventory;
     private readonly InputAction m_Player_M_Left;
     private readonly InputAction m_Player_M_Right;
+    private readonly InputAction m_Player_Slide;
     public struct PlayerActions
     {
         private @PlayerInputController m_Wrapper;
@@ -1364,6 +1386,7 @@ public partial class @PlayerInputController : IInputActionCollection2, IDisposab
         public InputAction @Inventory => m_Wrapper.m_Player_Inventory;
         public InputAction @M_Left => m_Wrapper.m_Player_M_Left;
         public InputAction @M_Right => m_Wrapper.m_Player_M_Right;
+        public InputAction @Slide => m_Wrapper.m_Player_Slide;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1421,6 +1444,9 @@ public partial class @PlayerInputController : IInputActionCollection2, IDisposab
                 @M_Right.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnM_Right;
                 @M_Right.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnM_Right;
                 @M_Right.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnM_Right;
+                @Slide.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSlide;
+                @Slide.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSlide;
+                @Slide.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSlide;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -1473,6 +1499,9 @@ public partial class @PlayerInputController : IInputActionCollection2, IDisposab
                 @M_Right.started += instance.OnM_Right;
                 @M_Right.performed += instance.OnM_Right;
                 @M_Right.canceled += instance.OnM_Right;
+                @Slide.started += instance.OnSlide;
+                @Slide.performed += instance.OnSlide;
+                @Slide.canceled += instance.OnSlide;
             }
         }
     }
@@ -1645,6 +1674,7 @@ public partial class @PlayerInputController : IInputActionCollection2, IDisposab
         void OnInventory(InputAction.CallbackContext context);
         void OnM_Left(InputAction.CallbackContext context);
         void OnM_Right(InputAction.CallbackContext context);
+        void OnSlide(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

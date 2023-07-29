@@ -36,20 +36,8 @@ public class PlayerMovementAdvanced : MonoBehaviour {
 
     public float groundDrag;
 
-    [Header("Stamina")]
-    public float stamina = 100f;
-
-    public float normalIncrease = 0.35f;
-    public float airIncrease = 0.15f;
-    public float lockIncrease = 1f;
-
-    public float sprintingDecrease = 0.2f;
-    public float climbingDecrease = 0.3f;
-    public float wallrunningDecrease = 0.2f;
-
     [Header("Effects")]
     public float number;
-    bool isVignetteShown = false;
 
     [Header("Jumping")]
     public float jumpForce;
@@ -95,8 +83,7 @@ public class PlayerMovementAdvanced : MonoBehaviour {
         sliding,
         air
     }
-    bool staminaGOGO;
-    public bool staminaLock;
+
     public bool sprinting;
     public bool idle;
     public bool sliding;
@@ -140,21 +127,17 @@ public class PlayerMovementAdvanced : MonoBehaviour {
 
 
         if (GameHandler.Instance != null) {
-            if (GameHandler.Instance.vStamina != null) {
-                GameHandler.Instance.vStamina.alpha = 1.0f - (stamina / 100f);
-            }
-
             if (sLines == null) {
                 if (GameObject.Find("SpeedLines").GetComponent<ParticleSystem>().gameObject != null) {
                     sLines = GameObject.Find("SpeedLines").GetComponent<ParticleSystem>().gameObject;
                 }
 
             }
-        if (pCam == null) {
+            if (pCam == null) {
                 pCam = GameObject.Find("PlayerCam").GetComponent<PlayerCam>();
             }
 
-            sprinting = GameHandler.Instance.sprinting && (GameHandler.Instance.horizontalInput != 0 || GameHandler.Instance.verticalInput != 0) && stamina > 0 && !staminaLock;
+            sprinting = GameHandler.Instance.sprinting && (GameHandler.Instance.horizontalInput != 0 || GameHandler.Instance.verticalInput != 0);
             MyInput();
             SpeedControl();
             StateHandler();
@@ -162,18 +145,9 @@ public class PlayerMovementAdvanced : MonoBehaviour {
 
             // handle drag
             if (grounded) { rb.drag = groundDrag; } else { rb.drag = 0; }
-            if (stamina < 10) {
-                if (stamina == 0) {
-                    staminaLock = true;
-                    staminaIncrease = lockIncrease;
-                }
-            } else if (stamina == 100) {
-                staminaLock = false;
-                staminaIncrease = normalIncrease;
-            }
 
             if (pCam != null) {
-                if (moveSpeed >= 10 && (state == MovementState.sprinting || state == MovementState.wallrunning) && stamina > 0 && !staminaLock) {
+                if (moveSpeed >= 10 && (state == MovementState.sprinting || state == MovementState.wallrunning)) {
                     SettingsData data = SaveSystem.LoadSettings();
 
                     if (data != null) {
@@ -209,10 +183,6 @@ public class PlayerMovementAdvanced : MonoBehaviour {
 
             if (!GameHandler.Instance.paused) {
                 if (GameHandler.Instance.horizontalInput == 0 && GameHandler.Instance.verticalInput == 0 && grounded && !notIdle()) { idle = true; } else { idle = false; }
-                if (staminaGOGO) { if (stamina > 0 || stamina != 0) { stamina -= staminaDecrease * (60f * Time.deltaTime); } }
-                if (!staminaGOGO && idle || crouching || state == MovementState.walking || state == MovementState.air) { if (stamina < 100 || stamina != 100) { stamina += staminaIncrease * (60f * Time.deltaTime); } }
-                if (stamina > 100) { stamina = 100; }
-                if (stamina < 0) { stamina = 0; }
 
                 pCam.particle.gameObject.SetActive(state == MovementState.sliding);
             }
@@ -276,20 +246,21 @@ public class PlayerMovementAdvanced : MonoBehaviour {
                         transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
                         //rb.AddForce(Vector3.down * 20f, ForceMode.Impulse);
                         playerHeight = 0.5f;
-                        
+
                         //transform.position += Vector3.down * difference;
                         //transform.position += Vector3.down * 0.5f;
                         crouching = true;
                     } else {
+                        if(sliding) { return; }
                         transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
                         playerHeight = startYScale;
-                        if(crouching) {
+                        if (crouching) {
                             //print("difference : " + difference);
                             transform.position += Vector3.up * difference;
                             //transform.position += Vector3.up * 0.5f;
                         }
                         crouching = false;
-                        
+
                     }
                 }
                 //groundslam
@@ -313,25 +284,19 @@ public class PlayerMovementAdvanced : MonoBehaviour {
 
         // Mode - Freeze
         if (freeze) {
-            if (!staminaLock) { staminaIncrease = normalIncrease; }
             state = MovementState.freeze;
             rb.velocity = Vector3.zero;
             desiredMoveSpeed = 0f;
-            staminaGOGO = false;
         } else if (idle) {
-            if (!staminaLock) { staminaIncrease = normalIncrease; }
             state = MovementState.idle;
             desiredMoveSpeed = 7f;
-            staminaGOGO = false;
         }
 
           // Mode - Vaulting
           else if (vaulting) {
-            if (!staminaLock) { staminaIncrease = normalIncrease; }
             state = MovementState.vaulting;
             desiredMoveSpeed = vaultSpeed;
             idle = false;
-            staminaGOGO = false;
         }
 
           // Mode - Climbing
@@ -339,8 +304,6 @@ public class PlayerMovementAdvanced : MonoBehaviour {
             state = MovementState.climbing;
             desiredMoveSpeed = climbSpeed;
             idle = false;
-            staminaDecrease = climbingDecrease;
-            staminaGOGO = true;
         }
 
           // Mode - Wallrunning
@@ -348,13 +311,11 @@ public class PlayerMovementAdvanced : MonoBehaviour {
             state = MovementState.wallrunning;
             desiredMoveSpeed = wallrunSpeed;
             idle = false;
-            staminaDecrease = wallrunningDecrease;
-            staminaGOGO = true;
         }
 
           // Mode - Sliding
           else if (sliding) {
-            if (!staminaLock) { staminaIncrease = normalIncrease; }
+
             state = MovementState.sliding;
 
             // increase speed by one every second
@@ -362,17 +323,13 @@ public class PlayerMovementAdvanced : MonoBehaviour {
                 desiredMoveSpeed = slideSpeed;
             } else
                 desiredMoveSpeed = sprintSpeed;
-
             idle = false;
-            staminaGOGO = false;
         }
 
           // Mode - Crouching
           else if (crouching) {
-            if (!staminaLock) { staminaIncrease = normalIncrease; }
             state = MovementState.crouching;
             desiredMoveSpeed = crouchSpeed;
-            staminaGOGO = false;
             idle = false;
         }
 
@@ -380,27 +337,23 @@ public class PlayerMovementAdvanced : MonoBehaviour {
           else if (sprinting) {
             state = MovementState.sprinting;
             desiredMoveSpeed = sprintSpeed;
-            staminaGOGO = true;
-            staminaDecrease = sprintingDecrease;
             idle = false;
         }
 
           // Mode - Walking
           else if (grounded) {
-            if (!staminaLock) { staminaIncrease = normalIncrease; }
             state = MovementState.walking;
             desiredMoveSpeed = walkSpeed;
             idle = false;
-            staminaGOGO = false;
+
         }
 
           // Mode - Air
           else {
-            if (!staminaLock) { staminaIncrease = airIncrease; }
             //print(rb.velocity.y);
             state = MovementState.air;
             idle = false;
-            staminaGOGO = false;
+
             if (moveSpeed < airMinSpeed)
                 desiredMoveSpeed = airMinSpeed;
         }
@@ -440,7 +393,7 @@ public class PlayerMovementAdvanced : MonoBehaviour {
 
             yield return null;
         }
-        keepMomentum = false;
+        
 
         moveSpeed = desiredMoveSpeed;
     }
@@ -449,26 +402,18 @@ public class PlayerMovementAdvanced : MonoBehaviour {
         if (climbingScript.exitingWall) return;
         if (climbingScriptDone.exitingWall) return;
         if (restricted) return;
-        
 
         // calculate movement direction
         moveDirection = orientation.forward * GameHandler.Instance.verticalInput + orientation.right * GameHandler.Instance.horizontalInput;
 
-        print(OnSlope() + " " + exitingSlope);
-
         // on slope
         if (OnSlope() && !exitingSlope) {
-            print(moveDirection.x);
-
-            if(moveDirection.x > 0) {
+            if (moveDirection.x > 0) {
                 print("horayy!");
                 rb.AddForce(GetSlopeMoveDirection(moveDirection) * desiredMoveSpeed * 20f, ForceMode.Force);
             } else {
                 rb.AddForce(GetSlopeMoveDirection(moveDirection) * moveSpeed * 20f, ForceMode.Force);
             }
-            
-
-            
 
             if (rb.velocity.y > 0)
                 rb.AddForce(Vector3.down * 80f, ForceMode.Force);
@@ -477,7 +422,8 @@ public class PlayerMovementAdvanced : MonoBehaviour {
         // on ground
         else if (grounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
-
+        else if (sliding)
+            rb.AddForce(orientation.forward * moveSpeed * 10f, ForceMode.Force);
         // in air
         else if (!grounded && !wChecker.touchingWall)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
@@ -497,11 +443,11 @@ public class PlayerMovementAdvanced : MonoBehaviour {
         // limiting speed on ground or in air
         else {
             Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-            Vector3 tempVel = rb.velocity;
+
             // limit velocity if needed
-            if ((state != MovementState.air || grounded) && flatVel.magnitude > moveSpeed) {
+            if (flatVel.magnitude > moveSpeed) {
                 Vector3 limitedVel = flatVel.normalized * moveSpeed;
-                rb.AddForce(-new Vector3(limitedVel.x, -rb.velocity.y, limitedVel.z));
+                rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
             }
         }
     }
@@ -525,7 +471,7 @@ public class PlayerMovementAdvanced : MonoBehaviour {
     }
 
     public bool OnSlope() {
-        
+
         if (Physics.Raycast(transform.position, -transform.up, playerHeight * 0.5f + 0.3f)) {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle < maxSlopeAngle && angle != 0;

@@ -17,7 +17,6 @@ public class DebugController : MonoBehaviour
     public static DebugCommand<int> HEALTH;
     public static DebugCommand<string, int, int, int> TELEPORT;
     public static DebugCommand<string> GOTO;
-    public static DebugCommand<string, int> STAMINA;
 
     public List<DebugCommandBase> commandList;
 
@@ -120,28 +119,6 @@ public class DebugController : MonoBehaviour
             }
             GameObject.Find("Player").transform.position = playerPos;
         });
-
-        STAMINA = new DebugCommand<string, int>("setStamina", "sets the stamina of player", "setStamina <string, int>", (t, x) =>
-        {
-            if (GameObject.Find("Player") != null)
-            {
-                switch(t) {
-                    case "sprint":
-                        GameObject.Find("Player").GetComponent<PlayerMovementAdvanced>().sprintingDecrease = x;
-                        textBody.text += "sprintingDecrease is now " + x + "\n"; 
-                        break;
-                    case "climbing":
-                        GameObject.Find("Player").GetComponent<PlayerMovementAdvanced>().climbingDecrease = x;
-                        textBody.text += "climbingDecrease is now " + x + "\n"; 
-                        break;
-                    case "wallrunning":
-                        GameObject.Find("Player").GetComponent<PlayerMovementAdvanced>().wallrunningDecrease = x;
-                        textBody.text += "wallrunningDecrease is now " + x + "\n"; 
-                        break;
-                }
-            }
-        });
-
         GOTO = new DebugCommand<string>("goto", "go to scene", "goto <string>", (x) =>
         {
             textBody.text += "Now loading : " + x + "\n";
@@ -155,7 +132,6 @@ public class DebugController : MonoBehaviour
             STOP,
             TELEPORT,
             HEALTH,
-            STAMINA,
             GOTO
         };
     }
